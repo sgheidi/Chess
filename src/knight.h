@@ -2,13 +2,21 @@
 #define CHESS_KNIGHT_H
 
 #include <SFML/Graphics.hpp>
+#include "piece.h"
 
-class Knight {
+using namespace std;
+
+class Knight : public Piece {
     public:
         int row, col;
-        sf::Sprite sprite;
-        sf::Texture texture;
-        Knight(int row, int col) : row(row), col(col) {}
+        char side;
+        Knight(char side, int row, int col) : side(side), row(row), col(col) {
+            movelist = {};
+            x = col * UNIT;
+            y = row * UNIT;
+        }
+        void move(int row, int col);
+        void update_movelist();
 };
 
 #endif // CHESS_KNIGHT_H

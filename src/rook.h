@@ -2,13 +2,21 @@
 #define CHESS_ROOK_H
 
 #include <SFML/Graphics.hpp>
+#include "piece.h"
 
-class Rook {
+using namespace std;
+
+class Rook : public Piece {
     public:
         int row, col;
-        sf::Sprite sprite;
-        sf::Texture texture;
-        Rook(int row, int col) : row(row), col(col) {}
+        char side;
+        Rook(char side, int row, int col) : side(side), row(row), col(col) {
+            movelist = {};
+            x = col * UNIT;
+            y = row * UNIT;
+        }
+        void move(int row, int col);
+        void update_movelist();
 };
 
 #endif // CHESS_ROOK_H

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-make && ./chess
+make -j4 && ./chess

@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include "bishop.h"
+#include "queen.h"
 #include "white.h"
 #include "black.h"
 
 using namespace std;
 
-void Bishop::update_movelist() {
+void Queen::update_movelist() {
     movelist.clear();
     if (side == 'W') {
         // UL
@@ -65,10 +65,58 @@ void Bishop::update_movelist() {
             row_ ++;
             col_ --;
         }
+        // U
+        row_ = row-1;
+        while (row_ >= 0) {
+            if (white::blocks[row_][col]) {
+                break;
+            }
+            movelist.push_back({row_, col});
+            if (black::blocks[row_][col]) {
+                break;
+            }
+            row_ --;
+        }
+        // D
+        row_ = row+1;
+        while (row_ <= 7) {
+            if (white::blocks[row_][col]) {
+                break;
+            }
+            movelist.push_back({row_, col});
+            if (black::blocks[row_][col]) {
+                break;
+            }
+            row_ ++;
+        }
+        // R
+        col_ = col+1;
+        while (col_ <= 7) {
+            if (white::blocks[row][col_]) {
+                break;
+            }
+            movelist.push_back({row, col_});
+            if (black::blocks[row][col_]) {
+                break;
+            }
+            col_ ++;
+        }
+        // L
+        col_ = col-1;
+        while (row_ >= 0) {
+            if (white::blocks[row][col_]) {
+                break;
+            }
+            movelist.push_back({row, col_});
+            if (black::blocks[row][col_]) {
+                break;
+            }
+            col_ --;
+        }
     }
 }
 
-void Bishop::move(int row_, int col_) {
+void Queen::move(int row_, int col_) {
     white::blocks[row][col] = 0;
     white::blocks[row_][col_] = 1;
     row = row_;

@@ -9,6 +9,7 @@
 #include "queen.h"
 #include "king.h"
 #include "config.h"
+#include "error.h"
 
 using namespace std;
 
@@ -31,6 +32,137 @@ namespace black {
         cout << endl;
     }
 
+    void circle(int row, int col) {
+        sf::CircleShape circle(8);
+        circle.setPosition(col*UNIT + PIECES_PADDING_X + 22, row*UNIT + PIECES_PADDING_Y + 22);
+        circle.setFillColor(sf::Color(66, 114, 118));
+        window.draw(circle);
+    }
+
+    string get_piece(int row, int col) {
+        for (int i=0;i<pawns.size();i++) {
+            if (pawns[i].row == row and pawns[i].col == col) {
+                return "P" + str(i);
+            }
+        }
+        for (int i=0;i<knights.size();i++) {
+            if (knights[i].row == row and knights[i].col == col) {
+                return "N" + str(i);
+            }
+        }
+        for (int i=0;i<bishops.size();i++) {
+            if (bishops[i].row == row and bishops[i].col == col) {
+                return "B" + str(i);
+            }
+        }
+        for (int i=0;i<rooks.size();i++) {
+            if (rooks[i].row == row and rooks[i].col == col) {
+                return "R" + str(i);
+            }
+        }
+        for (int i=0;i<queens.size();i++) {
+            if (queens[i].row == row and queens[i].col == col) {
+                return "Q" + str(i);
+            }
+        }
+        for (int i=0;i<kings.size();i++) {
+            if (kings[i].row == row and kings[i].col == col) {
+                return "K" + str(i);
+            }
+        }
+        // ERROR("Error from function `black::get_piece`: row = " + str(row) + ", col = " + str(col) + ".");
+        return NULL;
+    }
+
+    void update_moves() {
+        for (Pawn& p : pawns) p.update_movelist();
+        for (Knight& n : knights) n.update_movelist();
+        for (Bishop& b : bishops) b.update_movelist();
+        for (Rook& r : rooks) r.update_movelist();
+        for (Queen& q : queens) q.update_movelist();
+        for (King& k : kings) k.update_movelist();
+    }
+
+    void move(string piece, int row, int col) {
+        for (int i=0;i<8;i++) {
+            if (piece == "P" + str(i)) {
+                pawns[i].move(row, col);
+            }
+        }
+        for (int i=0;i<knights.size();i++) {
+            if (piece == "N" + str(i)) {
+                knights[i].move(row, col);
+            }
+        }
+        for (int i=0;i<bishops.size();i++) {
+            if (piece == "B" + str(i)) {
+                bishops[i].move(row, col);
+            }
+        }
+        for (int i=0;i<rooks.size();i++) {
+            if (piece == "R" + str(i)) {
+                rooks[i].move(row, col);
+            }
+        }
+        for (int i=0;i<queens.size();i++) {
+            if (piece == "Q" + str(i)) {
+                queens[i].move(row, col);
+            }
+        }
+        for (int i=0;i<kings.size();i++) {
+            if (piece == "K" + str(i)) {
+                kings[i].move(row, col);
+            }
+        }
+        update_moves();
+    }
+
+    // show the moves of the piece on (row, col)
+    void show_moves(string piece) {
+        for (int i=0;i<pawns.size();i++) {
+            if (piece == "P" + str(i)) {
+                for (auto arr : pawns[i].movelist) {
+                    circle(arr[0], arr[1]);
+                }
+            }
+        }
+        for (int i=0;i<knights.size();i++) {
+            if (piece == "N" + str(i)) {
+                for (auto arr : knights[i].movelist) {
+                    circle(arr[0], arr[1]);
+                }
+            }
+        }
+        for (int i=0;i<bishops.size();i++) {
+            if (piece == "B" + str(i)) {
+                for (auto arr : bishops[i].movelist) {
+                    circle(arr[0], arr[1]);
+                }
+            }
+        }
+        for (int i=0;i<rooks.size();i++) {
+            if (piece == "R" + str(i)) {
+                for (auto arr : rooks[i].movelist) {
+                    circle(arr[0], arr[1]);
+                }
+            }
+        }
+        for (int i=0;i<queens.size();i++) {
+            if (piece == "Q" + str(i)) {
+                for (auto arr : queens[i].movelist) {
+                    circle(arr[0], arr[1]);
+                }
+            }
+        }
+        for (int i=0;i<kings.size();i++) {
+            if (piece == "K" + str(i)) {
+                for (auto arr : kings[i].movelist) {
+                    circle(arr[0], arr[1]);
+                }
+            }
+        }
+    }
+
     void init() {
         for (int i=0;i<8;i++) {
             for (int j=0;j<8;j++) {
@@ -41,28 +173,30 @@ namespace black {
                 }
             }
         }
-        Bishop b1 = Bishop(0, 2);
-        Bishop b2 = Bishop(0, 5);
+        Bishop b1 = Bishop('B', 0, 2);
+        Bishop b2 = Bishop('B', 0, 5);
         bishops.push_back(b1);
         bishops.push_back(b2);
 
-        Knight n1 = Knight(0, 1);
-        Knight n2 = Knight(0, 6);
+        Knight n1 = Knight('B', 0, 1);
+        Knight n2 = Knight('B', 0, 6);
         knights.push_back(n1);
         knights.push_back(n2);
 
-        Rook r1 = Rook(0, 0);
-        Rook r2 = Rook(0, 7);
+        Rook r1 = Rook('B', 0, 0);
+        Rook r2 = Rook('B', 0, 7);
         rooks.push_back(r1);
         rooks.push_back(r2);
 
-        Queen q = Queen(0, 3);
+        Queen q = Queen('B', 0, 3);
         queens.push_back(q);
 
-        King k = King(0, 4);
+        King k = King('B',0, 4);
         kings.push_back(k);
 
         for (int i=0;i<8;i++) pawns.push_back(Pawn('B', 1, i));
+                
+        update_moves();
     }
 
     void draw() {
@@ -72,7 +206,7 @@ namespace black {
             }
             b.sprite.setTexture(b.texture);
             b.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            b.sprite.setPosition((b.col*UNIT) + PIECES_PADDING_X, (b.row*UNIT) + PIECES_PADDING_Y);
+            b.sprite.setPosition(b.x + PIECES_PADDING_X, b.y + PIECES_PADDING_Y);
             window.draw(b.sprite);
         }
         for (Knight n : knights) {
@@ -81,7 +215,7 @@ namespace black {
             }
             n.sprite.setTexture(n.texture);
             n.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            n.sprite.setPosition((n.col*UNIT) + PIECES_PADDING_X, (n.row*UNIT) + PIECES_PADDING_Y);
+            n.sprite.setPosition(n.x + PIECES_PADDING_X, n.y + PIECES_PADDING_Y);
             window.draw(n.sprite);
         }
         for (Rook r : rooks) {
@@ -90,7 +224,7 @@ namespace black {
             }
             r.sprite.setTexture(r.texture);
             r.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            r.sprite.setPosition((r.col*UNIT) + PIECES_PADDING_X, (r.row*UNIT) + PIECES_PADDING_Y);
+            r.sprite.setPosition(r.x + PIECES_PADDING_X, r.y + PIECES_PADDING_Y);
             window.draw(r.sprite);
         }
         for (Pawn p : pawns) {
@@ -99,7 +233,7 @@ namespace black {
             }
             p.sprite.setTexture(p.texture);
             p.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            p.sprite.setPosition((p.col*UNIT) + PIECES_PADDING_X, (p.row*UNIT) + PIECES_PADDING_Y);
+            p.sprite.setPosition(p.x + PIECES_PADDING_X, p.y + PIECES_PADDING_Y);
             window.draw(p.sprite);
         }
         for (Queen q : queens) {
@@ -108,7 +242,7 @@ namespace black {
             }
             q.sprite.setTexture(q.texture);
             q.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            q.sprite.setPosition((q.col*UNIT) + PIECES_PADDING_X, (q.row*UNIT) + PIECES_PADDING_Y);
+            q.sprite.setPosition(q.x + PIECES_PADDING_X, q.y + PIECES_PADDING_Y);
             window.draw(q.sprite);
         }
         for (King k : kings) {
@@ -117,7 +251,7 @@ namespace black {
             }
             k.sprite.setTexture(k.texture);
             k.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            k.sprite.setPosition((k.col*UNIT) + PIECES_PADDING_X, (k.row*UNIT) + PIECES_PADDING_Y);
+            k.sprite.setPosition(k.x + PIECES_PADDING_X, k.y + PIECES_PADDING_Y);
             window.draw(k.sprite);
         }
     }
