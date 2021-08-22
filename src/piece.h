@@ -15,7 +15,7 @@ class Piece {
         inline void print_movelist() const {
             print_vec2(movelist);
         }
-        // virtual void move(int row, int col) = 0;
+        virtual void move(int row, int col) = 0;
         virtual void update_movelist() = 0;
 };
 
