@@ -10,7 +10,9 @@ class Pawn : public Piece {
     public:
         int row, col;
         char side;
+        vector<vector<int>> attacks;
         Pawn(char side, int row, int col) : side(side), row(row), col(col) {
+            attacks = {};
             movelist = {};
             x = col * UNIT;
             y = row * UNIT;

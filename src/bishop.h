@@ -17,6 +17,7 @@ class Bishop : public Piece {
         }
         void move(int row, int col);
         void update_movelist();
+        void draw();
 };
 
 #endif // CHESS_BISHOP_H

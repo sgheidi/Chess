@@ -20,12 +20,14 @@ namespace white {
     extern vector<Queen> queens;
     extern vector<King> kings;
     extern int blocks[8][8];
+    vector<int> get_coords(string piece);
     void move(string piece, int row, int col);
     void init();
     void show_moves(string piece);
     void draw();
     void print_blocks();
     void update_movelist();
+    void update_moves();
     string get_piece(int row, int col);
 }
 

@@ -25,7 +25,7 @@ namespace black {
     void show_moves(string piece);
     void draw();
     void print_blocks();
-    void update_movelist();
+    void update_moves();
     string get_piece(int row, int col);
 }
 

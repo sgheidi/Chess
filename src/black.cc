@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "black.h"
+#include "white.h"
 #include "bishop.h"
 #include "knight.h"
 #include "rook.h"
@@ -71,7 +72,7 @@ namespace black {
             }
         }
         // ERROR("Error from function `black::get_piece`: row = " + str(row) + ", col = " + str(col) + ".");
-        return NULL;
+        // return NULL;
     }
 
     void update_moves() {
@@ -114,7 +115,43 @@ namespace black {
                 kings[i].move(row, col);
             }
         }
+        // captures
+        if (white::blocks[row][col]) {
+            white::blocks[row][col] = 0;
+            string piece = white::get_piece(row, col);
+            for (int i=0;i<8;i++) {
+                if (piece == "P" + str(i)) {
+                    white::pawns.erase(white::pawns.begin() + i); 
+                }
+            }
+            for (int i=0;i<white::knights.size();i++) {
+                if (piece == "N" + str(i)) {
+                    white::knights.erase(white::knights.begin() + i); 
+                }
+            }
+            for (int i=0;i<white::bishops.size();i++) {
+                if (piece == "B" + str(i)) {
+                    white::bishops.erase(white::bishops.begin() + i); 
+                }
+            }
+            for (int i=0;i<white::rooks.size();i++) {
+                if (piece == "R" + str(i)) {
+                    white::rooks.erase(white::rooks.begin() + i); 
+                }
+            }
+            for (int i=0;i<white::queens.size();i++) {
+                if (piece == "Q" + str(i)) {
+                    white::queens.erase(white::queens.begin() + i); 
+                }
+            }
+            for (int i=0;i<white::kings.size();i++) {
+                if (piece == "K" + str(i)) {
+                    white::kings.erase(white::kings.begin() + i); 
+                }
+            }
+        }
         update_moves();
+        white::update_moves();
     }
 
     // show the moves of the piece on (row, col)
@@ -195,7 +232,6 @@ namespace black {
         kings.push_back(k);
 
         for (int i=0;i<8;i++) pawns.push_back(Pawn('B', 1, i));
-                
         update_moves();
     }
 

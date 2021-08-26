@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "white.h"
+#include "black.h"
 #include "bishop.h"
 #include "knight.h"
 #include "rook.h"
@@ -21,6 +22,45 @@ namespace white {
     vector<Queen> queens = {};
     vector<King> kings = {};
     int blocks[8][8] = {};
+
+    bool in_check() {
+        
+    }
+
+    vector<int> get_coords(string piece) {
+        for (int i=0;i<8;i++) {
+            if (piece == "P" + str(i)) {
+                return {pawns[i].row, pawns[i].col};
+            }
+        }
+        for (int i=0;i<bishops.size();i++) {
+            if (piece == "B" + str(i)) {
+                return {bishops[i].row, bishops[i].col};
+            }
+        }
+        for (int i=0;i<knights.size();i++) {
+            if (piece == "N" + str(i)) {
+                return {knights[i].row, knights[i].col};
+            }
+        }
+        for (int i=0;i<rooks.size();i++) {
+            if (piece == "R" + str(i)) {
+                return {rooks[i].row, rooks[i].col};
+            }
+        }
+        for (int i=0;i<queens.size();i++) {
+            if (piece == "Q" + str(i)) {
+                return {queens[i].row, queens[i].col};
+            }
+        }
+        for (int i=0;i<kings.size();i++) {
+            if (piece == "K" + str(i)) {
+                return {kings[i].row, kings[i].col};
+            }
+        }
+        return {-1,-1};
+        // ERROR("Error from function `white::get_coords`: piece = " + piece);
+    }
 
     void print_blocks() {
         for (int i=0;i<8;i++) {
@@ -70,7 +110,7 @@ namespace white {
                 return "K" + str(i);
             }
         }
-        // ERROR("Error from function `white::get_piece`: row = " + str(row) + ", col = " + str(col) + ".");
+        ERROR("Error from function `white::get_piece`: row = " + str(row) + ", col = " + str(col) + ".");
         return NULL;
     }
 
@@ -114,6 +154,42 @@ namespace white {
                 kings[i].move(row, col);
             }
         }
+        // captures
+        if (black::blocks[row][col]) {
+            black::blocks[row][col] = 0;
+            string piece = black::get_piece(row, col);
+            for (int i=0;i<8;i++) {
+                if (piece == "P" + str(i)) {
+                    black::pawns.erase(black::pawns.begin() + i); 
+                }
+            }
+            for (int i=0;i<black::knights.size();i++) {
+                if (piece == "N" + str(i)) {
+                    black::knights.erase(black::knights.begin() + i); 
+                }
+            }
+            for (int i=0;i<black::bishops.size();i++) {
+                if (piece == "B" + str(i)) {
+                    black::bishops.erase(black::bishops.begin() + i); 
+                }
+            }
+            for (int i=0;i<black::rooks.size();i++) {
+                if (piece == "R" + str(i)) {
+                    black::rooks.erase(black::rooks.begin() + i); 
+                }
+            }
+            for (int i=0;i<black::queens.size();i++) {
+                if (piece == "Q" + str(i)) {
+                    black::queens.erase(black::queens.begin() + i); 
+                }
+            }
+            for (int i=0;i<black::kings.size();i++) {
+                if (piece == "K" + str(i)) {
+                    black::kings.erase(black::kings.begin() + i); 
+                }
+            }
+        }
+        black::update_moves();
         update_moves();
     }
 
@@ -195,20 +271,11 @@ namespace white {
         kings.push_back(k);
 
         for (int i=0;i<8;i++) pawns.push_back(Pawn('W', 6, i));
-        
         update_moves();
     }
 
     void draw() {
-        for (Bishop b : bishops) {
-            if (!b.texture.loadFromFile("../assets/sprites/white/bishop.png")) {
-                throw runtime_error("Could not load sprite file.");
-            }
-            b.sprite.setTexture(b.texture);
-            b.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            b.sprite.setPosition(b.x + PIECES_PADDING_X, b.y + PIECES_PADDING_Y);
-            window.draw(b.sprite);
-        }
+        for (Bishop b : bishops) b.draw();
         for (Knight n : knights) {
             if (!n.texture.loadFromFile("../assets/sprites/white/knight.png")) {
                 throw runtime_error("Could not load sprite file.");
