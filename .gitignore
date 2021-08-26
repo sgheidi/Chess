@@ -1,2 +1,6 @@
-Chess
+src/chess
+src/test
 todo*
+src/test.cc
+src/test.sh
+temp
