@@ -15,6 +15,7 @@
 using namespace std;
 
 namespace white {
+    string checker = "";
     vector<Bishop> bishops = {};
     vector<Knight> knights = {};
     vector<Rook> rooks = {};
@@ -24,7 +25,44 @@ namespace white {
     int blocks[8][8] = {};
 
     bool in_check() {
-        
+        vector<int> king_sq = {kings[0].row, kings[0].col};
+        for (int i=0;i<black::bishops.size();i++) {
+            if (find(black::bishops[i].movelist.begin(), black::bishops[i].movelist.end(), king_sq) 
+            != black::bishops[i].movelist.end()) {
+                checker = "B" + str(i);
+                return true;
+            }
+        }
+        for (int i=0;i<black::knights.size();i++) {
+            if (find(black::knights[i].movelist.begin(), black::knights[i].movelist.end(), king_sq) 
+            != black::knights[i].movelist.end()) {
+                checker = "N" + str(i);
+                return true;
+            }
+        }
+        for (int i=0;i<black::rooks.size();i++) {
+            if (find(black::rooks[i].movelist.begin(), black::rooks[i].movelist.end(), king_sq) 
+            != black::rooks[i].movelist.end()) {
+                checker = "R" + str(i);
+                return true;
+            }
+        }
+        for (int i=0;i<black::queens.size();i++) {
+            if (find(black::queens[i].movelist.begin(), black::queens[i].movelist.end(), king_sq) 
+            != black::queens[i].movelist.end()) {
+                checker = "Q" + str(i);
+                return true;
+            }
+        }
+        for (int i=0;i<black::pawns.size();i++) {
+            if (find(black::pawns[i].attacks.begin(), black::pawns[i].attacks.end(), king_sq) 
+            != black::pawns[i].attacks.end()) {
+                checker = "P" + str(i);
+                return true;
+            }
+        }
+        checker = "";
+        return false;
     }
 
     vector<int> get_coords(string piece) {
@@ -111,7 +149,6 @@ namespace white {
             }
         }
         ERROR("Error from function `white::get_piece`: row = " + str(row) + ", col = " + str(col) + ".");
-        return NULL;
     }
 
     void update_moves() {
@@ -123,74 +160,99 @@ namespace white {
         for (King& k : kings) k.update_movelist();
     }
 
-    void move(string piece, int row, int col) {
+    void move(string piece, int row, int col, bool is_undo) {
         for (int i=0;i<8;i++) {
             if (piece == "P" + str(i)) {
+                if (!is_undo) history.pos.push_back({pawns[i].row, pawns[i].col});
                 pawns[i].move(row, col);
             }
         }
         for (int i=0;i<knights.size();i++) {
             if (piece == "N" + str(i)) {
+                if (!is_undo) history.pos.push_back({knights[i].row, knights[i].col});
                 knights[i].move(row, col);
             }
         }
         for (int i=0;i<bishops.size();i++) {
             if (piece == "B" + str(i)) {
+                if (!is_undo) history.pos.push_back({bishops[i].row, bishops[i].col});
                 bishops[i].move(row, col);
             }
         }
         for (int i=0;i<rooks.size();i++) {
             if (piece == "R" + str(i)) {
+                if (!is_undo) history.pos.push_back({rooks[i].row, rooks[i].col});
                 rooks[i].move(row, col);
             }
         }
         for (int i=0;i<queens.size();i++) {
             if (piece == "Q" + str(i)) {
+                if (!is_undo) history.pos.push_back({queens[i].row, queens[i].col});
                 queens[i].move(row, col);
             }
         }
         for (int i=0;i<kings.size();i++) {
             if (piece == "K" + str(i)) {
+                if (!is_undo) history.pos.push_back({kings[i].row, kings[i].col});
                 kings[i].move(row, col);
             }
         }
         // captures
         if (black::blocks[row][col]) {
             black::blocks[row][col] = 0;
-            string piece = black::get_piece(row, col);
+            string capture_piece = black::get_piece(row, col);
+            if (!is_undo) {
+                history.is_capture.push_back(true);
+                history.capture_piece.push_back(capture_piece);
+                history.capture_sq.push_back({row, col});
+            }
             for (int i=0;i<8;i++) {
-                if (piece == "P" + str(i)) {
+                if (capture_piece == "P" + str(i)) {
                     black::pawns.erase(black::pawns.begin() + i); 
                 }
             }
             for (int i=0;i<black::knights.size();i++) {
-                if (piece == "N" + str(i)) {
+                if (capture_piece == "N" + str(i)) {
                     black::knights.erase(black::knights.begin() + i); 
                 }
             }
             for (int i=0;i<black::bishops.size();i++) {
-                if (piece == "B" + str(i)) {
+                if (capture_piece == "B" + str(i)) {
                     black::bishops.erase(black::bishops.begin() + i); 
                 }
             }
             for (int i=0;i<black::rooks.size();i++) {
-                if (piece == "R" + str(i)) {
+                if (capture_piece == "R" + str(i)) {
                     black::rooks.erase(black::rooks.begin() + i); 
                 }
             }
             for (int i=0;i<black::queens.size();i++) {
-                if (piece == "Q" + str(i)) {
+                if (capture_piece == "Q" + str(i)) {
                     black::queens.erase(black::queens.begin() + i); 
                 }
             }
             for (int i=0;i<black::kings.size();i++) {
-                if (piece == "K" + str(i)) {
+                if (capture_piece == "K" + str(i)) {
                     black::kings.erase(black::kings.begin() + i); 
                 }
             }
         }
+        else {
+            if (!is_undo) {
+                history.is_capture.push_back(false);
+                history.capture_piece.push_back("");
+                history.capture_sq.push_back({-1,-1});
+            }
+        }
         black::update_moves();
         update_moves();
+        if (!is_undo) {
+            history.n_moves ++;
+            history.piece.push_back(piece);
+        }
+        if (in_check()) {
+            print("In check!");
+        }
     }
 
     // show the moves of the piece on (row, col)

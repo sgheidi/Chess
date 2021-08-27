@@ -47,7 +47,7 @@ void Rook::update_movelist() {
         }
         // L
         col_ = col-1;
-        while (row_ >= 0) {
+        while (col_ >= 0) {
             if (white::blocks[row][col_]) {
                 break;
             }
@@ -57,6 +57,25 @@ void Rook::update_movelist() {
             }
             col_ --;
         }
+        vector<vector<int>> check_sq = {};
+        row_ = row;
+        col_ = col;
+        for (auto sq : movelist) {
+            move(sq[0], sq[1]);
+            for (Bishop& b : black::bishops) b.update_movelist();
+            for (Queen& q : black::queens) q.update_movelist();
+            for (Rook& r : black::rooks) r.update_movelist();
+            if (white::in_check()) {
+                if (black::blocks[sq[0]][sq[1]]) {
+                    if (black::get_piece(sq[0], sq[1]) == white::checker) {
+                        continue;
+                    }
+                }
+                check_sq.push_back(sq);
+            }
+        }
+        move(row_, col_);
+        diff(movelist, check_sq);
     } else {
         // U
         int row_ = row-1;
@@ -96,7 +115,7 @@ void Rook::update_movelist() {
         }
         // L
         col_ = col-1;
-        while (row_ >= 0) {
+        while (col_ >= 0) {
             if (black::blocks[row][col_]) {
                 break;
             }

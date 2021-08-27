@@ -5,6 +5,7 @@
 #include "white.h"
 #include "black.h"
 #include "config.h"
+#include "util.h"
 
 using namespace std;
 
@@ -34,6 +35,56 @@ void draw_select(int row, int col) {
 	if (row != -1 and col != -1) {
 		rect(color, row, col);
 	}
+}
+
+void take_back() {
+    int last = history.n_moves;
+    if (last == 0) {
+        print("No moves to undo!");
+        return;
+    }
+    white::move(history.piece[last-1], history.pos[last-1][0], history.pos[last-1][1], true);
+	if (history.is_capture[last-1]) {
+		for (int i=0;i<8;i++) {
+			if (history.capture_piece[last-1] == "P" + str(i)) {
+				black::pawns.push_back(Pawn('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::knights.size();i++) {
+			if (history.capture_piece[last-1] == "N" + str(i)) {
+				black::knights.push_back(Knight('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::bishops.size();i++) {
+			if (history.capture_piece[last-1] == "B" + str(i)) {
+				black::bishops.push_back(Bishop('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::rooks.size();i++) {
+			if (history.capture_piece[last-1] == "R" + str(i)) {
+				black::rooks.push_back(Rook('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::queens.size();i++) {
+			if (history.capture_piece[last-1] == "Q" + str(i)) {
+				black::queens.push_back(Queen('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::kings.size();i++) {
+			if (history.capture_piece[last-1] == "K" + str(i)) {
+				black::kings.push_back(King('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		black::blocks[history.capture_sq[last-1][0]][history.capture_sq[last-1][1]] = 1;
+	}
+	history.n_moves --;
+	history.piece.resize(history.n_moves);
+	history.pos.resize(history.n_moves);
+	history.is_capture.resize(history.n_moves);
+	history.capture_piece.resize(history.n_moves);
+	history.capture_sq.resize(history.n_moves);
+	white::update_moves();
+	black::update_moves();
 }
 
 int main() {
@@ -78,7 +129,12 @@ int main() {
 					case sf::Keyboard::K:
 						white::kings[0].print_movelist(); 
 						break;
+					case sf::Keyboard::H:
+						print_hist(); 
+						break;
 					#endif
+					case sf::Keyboard::Z:
+						take_back();
 				}
       		}
 			else if (event.type == sf::Event::MouseButtonReleased) {
@@ -92,7 +148,7 @@ int main() {
 							if (select_piece == "P" + str(i) and 
 							find(white::pawns[i].movelist.begin(), white::pawns[i].movelist.end(), to_sq) 
 							!= white::pawns[i].movelist.end()) {
-								white::move(select_piece, to_row, to_col);
+								white::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "P" + str(i) and 
 							find(white::pawns[i].movelist.begin(), white::pawns[i].movelist.end(), to_sq) 
@@ -105,7 +161,7 @@ int main() {
 							if (select_piece == "N" + str(i) and 
 							find(white::knights[i].movelist.begin(), white::knights[i].movelist.end(), to_sq) 
 							!= white::knights[i].movelist.end()) {
-								white::move(select_piece, to_row, to_col);
+								white::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "N" + str(i) and 
 							find(white::knights[i].movelist.begin(), white::knights[i].movelist.end(), to_sq) 
@@ -118,7 +174,7 @@ int main() {
 							if (select_piece == "B" + str(i) and 
 							find(white::bishops[i].movelist.begin(), white::bishops[i].movelist.end(), to_sq) 
 							!= white::bishops[i].movelist.end()) {
-								white::move(select_piece, to_row, to_col);
+								white::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "B" + str(i) and 
 							find(white::bishops[i].movelist.begin(), white::bishops[i].movelist.end(), to_sq) 
@@ -131,7 +187,7 @@ int main() {
 							if (select_piece == "R" + str(i) and 
 							find(white::rooks[i].movelist.begin(), white::rooks[i].movelist.end(), to_sq) 
 							!= white::rooks[i].movelist.end()) {
-								white::move(select_piece, to_row, to_col);
+								white::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "R" + str(i) and 
 							find(white::rooks[i].movelist.begin(), white::rooks[i].movelist.end(), to_sq) 
@@ -144,7 +200,7 @@ int main() {
 							if (select_piece == "Q" + str(i) and 
 							find(white::queens[i].movelist.begin(), white::queens[i].movelist.end(), to_sq) 
 							!= white::queens[i].movelist.end()) {
-								white::move(select_piece, to_row, to_col);
+								white::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "Q" + str(i) and 
 							find(white::queens[i].movelist.begin(), white::queens[i].movelist.end(), to_sq) 
@@ -157,7 +213,7 @@ int main() {
 							if (select_piece == "K" + str(i) and 
 							find(white::kings[i].movelist.begin(), white::kings[i].movelist.end(), to_sq) 
 							!= white::kings[i].movelist.end()) {
-								white::move(select_piece, to_row, to_col);
+								white::move(select_piece, to_row, to_col, false);
 								last_selected_piece = "";
 							}
 							else if (select_piece == "K" + str(i) and 

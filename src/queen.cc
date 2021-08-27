@@ -12,7 +12,7 @@ void Queen::update_movelist() {
         // UL
         int row_ = row-1;
         int col_ = col-1;
-        while (row_ >= 0 and col >= 0) {
+        while (row_ >= 0 and col_ >= 0) {
             if (white::blocks[row_][col_]) {
                 break;
             }
@@ -25,8 +25,8 @@ void Queen::update_movelist() {
         }
         // UR
         row_ = row-1;
-        col_ = col+1;
-        while (row_ >= 0 and col <= 7) {
+        col_ = col_+1;
+        while (row_ >= 0 and col_ <= 7) {
             if (white::blocks[row_][col_]) {
                 break;
             }
@@ -40,7 +40,7 @@ void Queen::update_movelist() {
          // LR
         row_ = row+1;
         col_ = col+1;
-        while (row_ <= 7 and col <= 7) {
+        while (row_ <= 7 and col_ <= 7) {
             if (white::blocks[row_][col_]) {
                 break;
             }
@@ -54,7 +54,7 @@ void Queen::update_movelist() {
         // LL
         row_ = row+1;
         col_ = col-1;
-        while (row_ <= 7 and col >= 0) {
+        while (row_ <= 7 and col_ >= 0) {
             if (white::blocks[row_][col_]) {
                 break;
             }
@@ -103,7 +103,7 @@ void Queen::update_movelist() {
         }
         // L
         col_ = col-1;
-        while (row_ >= 0) {
+        while (col_ >= 0) {
             if (white::blocks[row][col_]) {
                 break;
             }
@@ -113,11 +113,30 @@ void Queen::update_movelist() {
             }
             col_ --;
         }
+        vector<vector<int>> check_sq = {};
+        row_ = row;
+        col_ = col;
+        for (auto sq : movelist) {
+            move(sq[0], sq[1]);
+            for (Bishop& b : black::bishops) b.update_movelist();
+            for (Queen& q : black::queens) q.update_movelist();
+            for (Rook& r : black::rooks) r.update_movelist();
+            if (white::in_check()) {
+                if (black::blocks[sq[0]][sq[1]]) {
+                    if (black::get_piece(sq[0], sq[1]) == white::checker) {
+                        continue;
+                    }
+                }
+                check_sq.push_back(sq);
+            }
+        }
+        move(row_, col_);
+        diff(movelist, check_sq);
     } else {
         // UL
         int row_ = row-1;
         int col_ = col-1;
-        while (row_ >= 0 and col >= 0) {
+        while (row_ >= 0 and col_ >= 0) {
             if (black::blocks[row_][col_]) {
                 break;
             }
@@ -131,7 +150,7 @@ void Queen::update_movelist() {
         // UR
         row_ = row-1;
         col_ = col+1;
-        while (row_ >= 0 and col <= 7) {
+        while (row_ >= 0 and col_ <= 7) {
             if (black::blocks[row_][col_]) {
                 break;
             }
@@ -145,7 +164,7 @@ void Queen::update_movelist() {
          // LR
         row_ = row+1;
         col_ = col+1;
-        while (row_ <= 7 and col <= 7) {
+        while (row_ <= 7 and col_ <= 7) {
             if (black::blocks[row_][col_]) {
                 break;
             }
@@ -159,7 +178,7 @@ void Queen::update_movelist() {
         // LL
         row_ = row+1;
         col_ = col-1;
-        while (row_ <= 7 and col >= 0) {
+        while (row_ <= 7 and col_ >= 0) {
             if (black::blocks[row_][col_]) {
                 break;
             }
@@ -208,7 +227,7 @@ void Queen::update_movelist() {
         }
         // L
         col_ = col-1;
-        while (row_ >= 0) {
+        while (col_ >= 0) {
             if (black::blocks[row][col_]) {
                 break;
             }

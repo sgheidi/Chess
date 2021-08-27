@@ -21,6 +21,24 @@ void Pawn::update_movelist() {
             movelist.push_back({row-1, col+1});
         if (black::blocks[row-1][col-1] and row-1 >= 0 and col-1 < 8)
             movelist.push_back({row-1, col-1});
+        vector<vector<int>> check_sq = {};
+        int row_ = row;
+        int col_ = col;
+        for (auto sq : movelist) {
+            move(sq[0], sq[1]);
+            for (Bishop& b : black::bishops) b.update_movelist();
+            for (Queen& q : black::queens) q.update_movelist();
+            for (Rook& r : black::rooks) r.update_movelist();
+            if (white::in_check()) {
+                check_sq.push_back(sq);
+            }
+        }
+        move(row_, col_);
+        diff(movelist, check_sq);
+        if (row-1 >= 0 and col-1 >= 0)
+            attacks.push_back({row-1, col-1});
+        if (row-1 >= 0 and col+1 < 8)
+            attacks.push_back({row-1, col+1});
     } else {
         // double step
         if (row == 1 and !black::blocks[row+2][col] and !white::blocks[row+2][col] and !black::blocks[row+1][col] and
@@ -33,7 +51,13 @@ void Pawn::update_movelist() {
         if (white::blocks[row+1][col+1] and row+1 < 8 and col+1 < 8)
             movelist.push_back({row+1, col+1});
         if (white::blocks[row+1][col-1] and row+1 < 8 and col-1 < 8)
-            movelist.push_back({row+1, col-1});        
+            movelist.push_back({row+1, col-1});   
+        
+        
+        if (row+1 < 8 and col-1 >= 0)
+            attacks.push_back({row+1, col-1});
+        if (row+1 < 8 and col+1 < 8)
+            attacks.push_back({row+1, col+1});     
     }
 }
 

@@ -71,6 +71,7 @@ namespace black {
                 return "K" + str(i);
             }
         }
+        return "nothin";
         // ERROR("Error from function `black::get_piece`: row = " + str(row) + ", col = " + str(col) + ".");
         // return NULL;
     }
@@ -152,6 +153,9 @@ namespace black {
         }
         update_moves();
         white::update_moves();
+        history.n_moves ++;
+        history.piece.push_back(piece);
+        history.pos.push_back({row, col});
     }
 
     // show the moves of the piece on (row, col)

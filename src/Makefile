@@ -4,7 +4,7 @@
 SOURCE = main.cc bishop.cc white.cc config.cc black.cc pawn.cc knight.cc rook.cc queen.cc king.cc
 CC = g++ -std=c++2a
 EXECUTABLE = chess
-LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -w
+LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -w -g
 OBJECT = $(SOURCE:.cpp=.o)
 
 all: $(OBJECT)

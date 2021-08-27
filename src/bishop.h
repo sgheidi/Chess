@@ -10,6 +10,7 @@ class Bishop : public Piece {
     public:
         int row, col;
         char side;
+        vector<vector<int>> check_movelist;
         Bishop(char side, int row, int col) : side(side), row(row), col(col) {
             movelist = {};
             x = col * UNIT;
