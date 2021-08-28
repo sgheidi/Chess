@@ -13,6 +13,7 @@
 using namespace std;
 
 namespace black {
+    extern string checker;
     extern vector<Bishop> bishops;
     extern vector<Knight> knights;
     extern vector<Rook> rooks;
@@ -20,6 +21,7 @@ namespace black {
     extern vector<Queen> queens;
     extern vector<King> kings;
     extern int blocks[8][8];
+    bool in_check();
     void move(string piece, int row, int col);
     void init();
     void show_moves(string piece);

@@ -15,7 +15,7 @@
 using namespace std;
 
 namespace white {
-    string checker = "";
+    vector<string> checker = {};
     vector<Bishop> bishops = {};
     vector<Knight> knights = {};
     vector<Rook> rooks = {};
@@ -25,79 +25,52 @@ namespace white {
     int blocks[8][8] = {};
 
     bool in_check() {
+        bool ret = false;
+        checker.clear();
         vector<int> king_sq = {kings[0].row, kings[0].col};
         for (int i=0;i<black::bishops.size();i++) {
             if (find(black::bishops[i].movelist.begin(), black::bishops[i].movelist.end(), king_sq) 
             != black::bishops[i].movelist.end()) {
-                checker = "B" + str(i);
-                return true;
+                checker.push_back("B" + str(i));
+                ret = true;
             }
         }
         for (int i=0;i<black::knights.size();i++) {
             if (find(black::knights[i].movelist.begin(), black::knights[i].movelist.end(), king_sq) 
             != black::knights[i].movelist.end()) {
-                checker = "N" + str(i);
-                return true;
+                checker.push_back("N" + str(i));
+                ret = true;
             }
         }
         for (int i=0;i<black::rooks.size();i++) {
             if (find(black::rooks[i].movelist.begin(), black::rooks[i].movelist.end(), king_sq) 
             != black::rooks[i].movelist.end()) {
-                checker = "R" + str(i);
-                return true;
+                checker.push_back("R" + str(i));
+                ret = true;
             }
         }
         for (int i=0;i<black::queens.size();i++) {
             if (find(black::queens[i].movelist.begin(), black::queens[i].movelist.end(), king_sq) 
             != black::queens[i].movelist.end()) {
-                checker = "Q" + str(i);
-                return true;
+                checker.push_back("Q" + str(i));
+                ret = true;
             }
         }
         for (int i=0;i<black::pawns.size();i++) {
             if (find(black::pawns[i].attacks.begin(), black::pawns[i].attacks.end(), king_sq) 
             != black::pawns[i].attacks.end()) {
-                checker = "P" + str(i);
-                return true;
+                checker.push_back("P" + str(i));
+                ret = true;
             }
         }
-        checker = "";
-        return false;
-    }
-
-    vector<int> get_coords(string piece) {
-        for (int i=0;i<8;i++) {
-            if (piece == "P" + str(i)) {
-                return {pawns[i].row, pawns[i].col};
+        for (int i=0;i<black::kings.size();i++) {
+            if (find(black::kings[i].movelist.begin(), black::kings[i].movelist.end(), king_sq) 
+            != black::kings[i].movelist.end()) {
+                checker.push_back("K" + str(i));
+                ret = true;
             }
         }
-        for (int i=0;i<bishops.size();i++) {
-            if (piece == "B" + str(i)) {
-                return {bishops[i].row, bishops[i].col};
-            }
-        }
-        for (int i=0;i<knights.size();i++) {
-            if (piece == "N" + str(i)) {
-                return {knights[i].row, knights[i].col};
-            }
-        }
-        for (int i=0;i<rooks.size();i++) {
-            if (piece == "R" + str(i)) {
-                return {rooks[i].row, rooks[i].col};
-            }
-        }
-        for (int i=0;i<queens.size();i++) {
-            if (piece == "Q" + str(i)) {
-                return {queens[i].row, queens[i].col};
-            }
-        }
-        for (int i=0;i<kings.size();i++) {
-            if (piece == "K" + str(i)) {
-                return {kings[i].row, kings[i].col};
-            }
-        }
-        return {-1,-1};
-        // ERROR("Error from function `white::get_coords`: piece = " + piece);
+        return ret ? true : false;
     }
 
     void print_blocks() {
@@ -249,9 +222,6 @@ namespace white {
         if (!is_undo) {
             history.n_moves ++;
             history.piece.push_back(piece);
-        }
-        if (in_check()) {
-            print("In check!");
         }
     }
 

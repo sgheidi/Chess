@@ -30,7 +30,7 @@ extern struct History {
     vector<vector<int>> capture_sq;
 } history;
 
-// takes set difference (v1 - v2), places back into v1
+// takes set difference (v1 - v2), places result into v1
 inline void diff(std::vector<std::vector<int>>& v1, std::vector<std::vector<int>> v2) {
     for (int i=v1.size()-1;i>=0;i--) {
         if (find(v2.begin(), v2.end(), v1[i]) != v2.end()) {

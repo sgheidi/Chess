@@ -25,7 +25,7 @@ void Queen::update_movelist() {
         }
         // UR
         row_ = row-1;
-        col_ = col_+1;
+        col_ = col+1;
         while (row_ >= 0 and col_ <= 7) {
             if (white::blocks[row_][col_]) {
                 break;
@@ -122,8 +122,8 @@ void Queen::update_movelist() {
             for (Queen& q : black::queens) q.update_movelist();
             for (Rook& r : black::rooks) r.update_movelist();
             if (white::in_check()) {
-                if (black::blocks[sq[0]][sq[1]]) {
-                    if (black::get_piece(sq[0], sq[1]) == white::checker) {
+                if (black::blocks[sq[0]][sq[1]] and white::checker.size() == 1) {
+                    if (black::get_piece(sq[0], sq[1]) == white::checker[0]) {
                         continue;
                     }
                 }

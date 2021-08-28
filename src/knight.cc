@@ -27,6 +27,11 @@ void Knight::update_movelist() {
             for (Queen& q : black::queens) q.update_movelist();
             for (Rook& r : black::rooks) r.update_movelist();
             if (white::in_check()) {
+                if (black::blocks[sq[0]][sq[1]] and white::checker.size() == 1) {
+                    if (black::get_piece(sq[0], sq[1]) == white::checker[0]) {
+                        continue;
+                    }
+                }
                 check_sq.push_back(sq);
             }
         }

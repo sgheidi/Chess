@@ -13,7 +13,7 @@
 using namespace std;
 
 namespace white {
-    extern string checker;
+    extern vector<string> checker;
     extern vector<Bishop> bishops;
     extern vector<Knight> knights;
     extern vector<Rook> rooks;
@@ -22,7 +22,6 @@ namespace white {
     extern vector<King> kings;
     extern int blocks[8][8];
     bool in_check();
-    vector<int> get_coords(string piece);
     void move(string piece, int row, int col, bool undo);
     void init();
     void show_moves(string piece);

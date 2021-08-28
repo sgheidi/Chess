@@ -15,6 +15,7 @@
 using namespace std;
 
 namespace black {
+    string checker = "";
     vector<Bishop> bishops = {};
     vector<Knight> knights = {};
     vector<Rook> rooks = {};
@@ -22,6 +23,47 @@ namespace black {
     vector<Queen> queens = {};
     vector<King> kings = {};
     int blocks[8][8] = {};
+
+    bool in_check() {
+        vector<int> king_sq = {kings[0].row, kings[0].col};
+        for (int i=0;i<white::bishops.size();i++) {
+            if (find(white::bishops[i].movelist.begin(), white::bishops[i].movelist.end(), king_sq) 
+            != white::bishops[i].movelist.end()) {
+                checker = "B" + str(i);
+                return true;
+            }
+        }
+        for (int i=0;i<white::knights.size();i++) {
+            if (find(white::knights[i].movelist.begin(), white::knights[i].movelist.end(), king_sq) 
+            != white::knights[i].movelist.end()) {
+                checker = "N" + str(i);
+                return true;
+            }
+        }
+        for (int i=0;i<white::rooks.size();i++) {
+            if (find(white::rooks[i].movelist.begin(), white::rooks[i].movelist.end(), king_sq) 
+            != white::rooks[i].movelist.end()) {
+                checker = "R" + str(i);
+                return true;
+            }
+        }
+        for (int i=0;i<white::queens.size();i++) {
+            if (find(white::queens[i].movelist.begin(), white::queens[i].movelist.end(), king_sq) 
+            != white::queens[i].movelist.end()) {
+                checker = "Q" + str(i);
+                return true;
+            }
+        }
+        for (int i=0;i<white::pawns.size();i++) {
+            if (find(white::pawns[i].attacks.begin(), white::pawns[i].attacks.end(), king_sq) 
+            != white::pawns[i].attacks.end()) {
+                checker = "P" + str(i);
+                return true;
+            }
+        }
+        checker = "";
+        return false;
+    }
 
     void print_blocks() {
         for (int i=0;i<8;i++) {
