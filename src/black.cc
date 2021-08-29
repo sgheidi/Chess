@@ -15,7 +15,7 @@
 using namespace std;
 
 namespace black {
-    string checker = "";
+    vector<string> checker = {};
     vector<Bishop> bishops = {};
     vector<Knight> knights = {};
     vector<Rook> rooks = {};
@@ -25,44 +25,52 @@ namespace black {
     int blocks[8][8] = {};
 
     bool in_check() {
+        bool ret = false;
+        checker.clear();
         vector<int> king_sq = {kings[0].row, kings[0].col};
         for (int i=0;i<white::bishops.size();i++) {
             if (find(white::bishops[i].movelist.begin(), white::bishops[i].movelist.end(), king_sq) 
             != white::bishops[i].movelist.end()) {
-                checker = "B" + str(i);
-                return true;
+                checker.push_back("B" + str(i));
+                ret = true;
             }
         }
         for (int i=0;i<white::knights.size();i++) {
             if (find(white::knights[i].movelist.begin(), white::knights[i].movelist.end(), king_sq) 
             != white::knights[i].movelist.end()) {
-                checker = "N" + str(i);
-                return true;
+                checker.push_back("N" + str(i));
+                ret = true;
             }
         }
         for (int i=0;i<white::rooks.size();i++) {
             if (find(white::rooks[i].movelist.begin(), white::rooks[i].movelist.end(), king_sq) 
             != white::rooks[i].movelist.end()) {
-                checker = "R" + str(i);
-                return true;
+                checker.push_back("R" + str(i));
+                ret = true;
             }
         }
         for (int i=0;i<white::queens.size();i++) {
             if (find(white::queens[i].movelist.begin(), white::queens[i].movelist.end(), king_sq) 
             != white::queens[i].movelist.end()) {
-                checker = "Q" + str(i);
-                return true;
+                checker.push_back("Q" + str(i));
+                ret = true;
             }
         }
         for (int i=0;i<white::pawns.size();i++) {
             if (find(white::pawns[i].attacks.begin(), white::pawns[i].attacks.end(), king_sq) 
             != white::pawns[i].attacks.end()) {
-                checker = "P" + str(i);
-                return true;
+                checker.push_back("P" + str(i));
+                ret = true;
             }
         }
-        checker = "";
-        return false;
+        for (int i=0;i<white::kings.size();i++) {
+            if (find(white::kings[i].movelist.begin(), white::kings[i].movelist.end(), king_sq) 
+            != white::kings[i].movelist.end()) {
+                checker.push_back("K" + str(i));
+                ret = true;
+            }
+        }
+        return ret ? true : false;
     }
 
     void print_blocks() {
@@ -119,11 +127,11 @@ namespace black {
     }
 
     void update_moves() {
-        for (Pawn& p : pawns) p.update_movelist();
-        for (Knight& n : knights) n.update_movelist();
-        for (Bishop& b : bishops) b.update_movelist();
-        for (Rook& r : rooks) r.update_movelist();
-        for (Queen& q : queens) q.update_movelist();
+        for (Pawn& p : pawns) p.update_movelist(true);
+        for (Knight& n : knights) n.update_movelist(true);
+        for (Bishop& b : bishops) b.update_movelist(true);
+        for (Rook& r : rooks) r.update_movelist(true);
+        for (Queen& q : queens) q.update_movelist(true);
         for (King& k : kings) k.update_movelist();
     }
 

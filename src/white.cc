@@ -125,11 +125,11 @@ namespace white {
     }
 
     void update_moves() {
-        for (Pawn& p : pawns) p.update_movelist();
-        for (Knight& n : knights) n.update_movelist();
-        for (Bishop& b : bishops) b.update_movelist();
-        for (Rook& r : rooks) r.update_movelist();
-        for (Queen& q : queens) q.update_movelist();
+        for (Pawn& p : pawns) p.update_movelist(true);
+        for (Knight& n : knights) n.update_movelist(true);
+        for (Bishop& b : bishops) b.update_movelist(true);
+        for (Rook& r : rooks) r.update_movelist(true);
+        for (Queen& q : queens) q.update_movelist(true);
         for (King& k : kings) k.update_movelist();
     }
 
@@ -217,8 +217,8 @@ namespace white {
                 history.capture_sq.push_back({-1,-1});
             }
         }
-        black::update_moves();
         update_moves();
+        black::update_moves();
         if (!is_undo) {
             history.n_moves ++;
             history.piece.push_back(piece);

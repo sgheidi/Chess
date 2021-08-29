@@ -11,6 +11,7 @@ class Pawn : public Piece {
         int row, col;
         char side;
         vector<vector<int>> attacks;
+        bool is_enpassant;
         Pawn(char side, int row, int col) : side(side), row(row), col(col) {
             attacks = {};
             movelist = {};
@@ -18,7 +19,7 @@ class Pawn : public Piece {
             y = row * UNIT;
         }
         void move(int row, int col);
-        void update_movelist();
+        void update_movelist(bool check_pin);
 };
 
 #endif // CHESS_PAWN_H

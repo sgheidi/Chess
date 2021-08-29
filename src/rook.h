@@ -16,7 +16,7 @@ class Rook : public Piece {
             y = row * UNIT;
         }
         void move(int row, int col);
-        void update_movelist();
+        void update_movelist(bool check_pin);
 };
 
 #endif // CHESS_ROOK_H

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void Rook::update_movelist() {
+void Rook::update_movelist(bool check_pin) {
     movelist.clear();
     if (side == 'W') {
         // U
@@ -57,25 +57,27 @@ void Rook::update_movelist() {
             }
             col_ --;
         }
-        vector<vector<int>> check_sq = {};
-        row_ = row;
-        col_ = col;
-        for (auto sq : movelist) {
-            move(sq[0], sq[1]);
-            for (Bishop& b : black::bishops) b.update_movelist();
-            for (Queen& q : black::queens) q.update_movelist();
-            for (Rook& r : black::rooks) r.update_movelist();
-            if (white::in_check()) {
-                if (black::blocks[sq[0]][sq[1]] and white::checker.size() == 1) {
-                    if (black::get_piece(sq[0], sq[1]) == white::checker[0]) {
-                        continue;
+        if (check_pin) {
+            vector<vector<int>> check_sq = {};
+            row_ = row;
+            col_ = col;
+            for (auto sq : movelist) {
+                move(sq[0], sq[1]);
+                for (Bishop& b : black::bishops) b.update_movelist(false);
+                for (Queen& q : black::queens) q.update_movelist(false);
+                for (Rook& r : black::rooks) r.update_movelist(false);
+                if (white::in_check()) {
+                    if (black::blocks[sq[0]][sq[1]] and white::checker.size() == 1) {
+                        if (black::get_piece(sq[0], sq[1]) == white::checker[0]) {
+                            continue;
+                        }
                     }
+                    check_sq.push_back(sq);
                 }
-                check_sq.push_back(sq);
             }
+            move(row_, col_);
+            diff(movelist, check_sq);
         }
-        move(row_, col_);
-        diff(movelist, check_sq);
     } else {
         // U
         int row_ = row-1;
@@ -124,6 +126,27 @@ void Rook::update_movelist() {
                 break;
             }
             col_ --;
+        }
+        if (check_pin) {
+            vector<vector<int>> check_sq = {};
+            row_ = row;
+            col_ = col;
+            for (auto sq : movelist) {
+                move(sq[0], sq[1]);
+                for (Bishop& b : white::bishops) b.update_movelist(false);
+                for (Queen& q : white::queens) q.update_movelist(false);
+                for (Rook& r : white::rooks) r.update_movelist(false);
+                if (black::in_check()) {
+                    if (white::blocks[sq[0]][sq[1]] and black::checker.size() == 1) {
+                        if (white::get_piece(sq[0], sq[1]) == black::checker[0]) {
+                            continue;
+                        }
+                    }
+                    check_sq.push_back(sq);
+                }
+            }
+            move(row_, col_);
+            diff(movelist, check_sq);
         }
     }
 }

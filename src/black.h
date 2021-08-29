@@ -13,7 +13,7 @@
 using namespace std;
 
 namespace black {
-    extern string checker;
+    extern vector<string> checker;
     extern vector<Bishop> bishops;
     extern vector<Knight> knights;
     extern vector<Rook> rooks;

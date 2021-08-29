@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void Knight::update_movelist() {
+void Knight::update_movelist(bool check_pin) {
     movelist.clear();
     vector<vector<int>> squares = {
         {row+1, col-2}, {row+1, col+2}, {row+2, col-1}, {row+2, col+1},
@@ -18,30 +18,53 @@ void Knight::update_movelist() {
                 movelist.push_back({s[0], s[1]});
             }
         }
-        vector<vector<int>> check_sq = {};
-        int row_ = row;
-        int col_ = col;
-        for (auto sq : movelist) {
-            move(sq[0], sq[1]);
-            for (Bishop& b : black::bishops) b.update_movelist();
-            for (Queen& q : black::queens) q.update_movelist();
-            for (Rook& r : black::rooks) r.update_movelist();
-            if (white::in_check()) {
-                if (black::blocks[sq[0]][sq[1]] and white::checker.size() == 1) {
-                    if (black::get_piece(sq[0], sq[1]) == white::checker[0]) {
-                        continue;
+        if (check_pin) {
+            vector<vector<int>> check_sq = {};
+            int row_ = row;
+            int col_ = col;
+            for (auto sq : movelist) {
+                move(sq[0], sq[1]);
+                for (Bishop& b : black::bishops) b.update_movelist(false);
+                for (Queen& q : black::queens) q.update_movelist(false);
+                for (Rook& r : black::rooks) r.update_movelist(false);
+                if (white::in_check()) {
+                    if (black::blocks[sq[0]][sq[1]] and white::checker.size() == 1) {
+                        if (black::get_piece(sq[0], sq[1]) == white::checker[0]) {
+                            continue;
+                        }
                     }
+                    check_sq.push_back(sq);
                 }
-                check_sq.push_back(sq);
             }
+            move(row_, col_);
+            diff(movelist, check_sq);
         }
-        move(row_, col_);
-        diff(movelist, check_sq);
     } else {
         for (vector<int> s : squares) {
             if (!black::blocks[s[0]][s[1]] and s[0] >= 0 and s[0] < 8 and s[1] >= 0 and s[1] < 8) {
                 movelist.push_back({s[0], s[1]});
             }
+        }
+        if (check_pin) {
+            vector<vector<int>> check_sq = {};
+            int row_ = row;
+            int col_ = col;
+            for (auto sq : movelist) {
+                move(sq[0], sq[1]);
+                for (Bishop& b : white::bishops) b.update_movelist(false);
+                for (Queen& q : white::queens) q.update_movelist(false);
+                for (Rook& r : white::rooks) r.update_movelist(false);
+                if (black::in_check()) {
+                    if (white::blocks[sq[0]][sq[1]] and black::checker.size() == 1) {
+                        if (white::get_piece(sq[0], sq[1]) == black::checker[0]) {
+                            continue;
+                        }
+                    }
+                    check_sq.push_back(sq);
+                }
+            }
+            move(row_, col_);
+            diff(movelist, check_sq);
         }
     }
 }

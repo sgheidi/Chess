@@ -18,7 +18,7 @@ class Piece {
         }
 
         virtual void move(int row, int col) = 0;
-        virtual void update_movelist() = 0;
+        // virtual void update_movelist(bool check_pin) = 0;
 };
 
 #endif // CHESS_PIECE_H
