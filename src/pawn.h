@@ -13,6 +13,7 @@ class Pawn : public Piece {
         vector<vector<int>> attacks;
         bool is_enpassant;
         Pawn(char side, int row, int col) : side(side), row(row), col(col) {
+            is_enpassant = false;
             attacks = {};
             movelist = {};
             x = col * UNIT;

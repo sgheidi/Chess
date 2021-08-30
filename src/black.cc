@@ -70,7 +70,7 @@ namespace black {
                 ret = true;
             }
         }
-        return ret ? true : false;
+        return ret;
     }
 
     void print_blocks() {
@@ -136,8 +136,20 @@ namespace black {
     }
 
     void move(string piece, int row, int col) {
+        // reset pawn's enpassant flags
+        for (Pawn& p : pawns) p.is_enpassant = false;
+
         for (int i=0;i<8;i++) {
             if (piece == "P" + str(i)) {
+                // enpassant capture
+                if (row == 5 and abs(pawns[i].col-col) == 1 and !white::blocks[row][col]) {
+                    for (int i=0;i<white::pawns.size();i++) {
+                        if (white::pawns[i].is_enpassant) {
+                            white::pawns.erase(white::pawns.begin() + i); 
+                            white::blocks[row-1][col] = 0;
+                        }
+                    }
+                }
                 pawns[i].move(row, col);
             }
         }

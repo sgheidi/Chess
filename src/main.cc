@@ -132,6 +132,9 @@ int main() {
 					case sf::Keyboard::H:
 						print_hist(); 
 						break;
+					// case sf::Keyboard::H:
+					// 	print_vec2(); 
+					// 	break;
 					#endif
 					case sf::Keyboard::Z:
 						take_back();
