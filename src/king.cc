@@ -49,7 +49,7 @@ void King::update_movelist() {
         if (white::can_castle_K())
             movelist.push_back({10, 10}); // (10, 10) code for castling king-side
         if (white::can_castle_Q())
-            movelist.push_back({100, 100}); // (100, 100) code for castling king-side
+            movelist.push_back({100, 100}); // (100, 100) code for castling queen-side
     } else {
         for (vector<int> s : squares) {
             if (!black::blocks[s[0]][s[1]] and s[0] >= 0 and s[0] < 8 and s[1] >= 0 and s[1] < 8) {
@@ -87,7 +87,7 @@ void King::update_movelist() {
         if (black::can_castle_K())
             movelist.push_back({10, 10}); // (10, 10) code for castling king-side
         if (black::can_castle_Q())
-            movelist.push_back({100, 100}); // (100, 100) code for castling king-side
+            movelist.push_back({100, 100}); // (100, 100) code for castling queen-side
     }
 }
 

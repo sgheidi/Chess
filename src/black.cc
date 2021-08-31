@@ -24,6 +24,10 @@ namespace black {
     vector<King> kings = {};
     int blocks[8][8] = {};
 
+    bool no_moves() {
+        // for     
+    }
+
     // return true if square (row, col) is in any of opponent pieces' movelists
     bool in_opp_movelist(int row, int col) {
         vector<int> sq = {row, col};
@@ -231,6 +235,25 @@ namespace black {
 
         for (int i=0;i<8;i++) {
             if (piece == "P" + str(i)) {
+                // promote
+                if (row == 7) {
+                    string promote_piece;
+                    cout << "Enter piece: (Q, N, R, B) ";
+                    cin >> promote_piece;
+                    if (promote_piece == "Q") {
+                        queens.push_back(Queen('B', row, col));
+                    } else if (promote_piece == "R") {
+                        rooks.push_back(Rook('B', row, col));
+                    } else if (promote_piece == "B") {
+                        bishops.push_back(Bishop('B', row, col));
+                    } else if (promote_piece == "N") {
+                        knights.push_back(Knight('B', row, col));
+                    }
+                    blocks[row][col] = 1;
+                    blocks[pawns[i].row][pawns[i].col] = 0;
+                    pawns.erase(pawns.begin() + i);
+                    break;
+                }
                 // enpassant capture
                 if (row == 5 and abs(pawns[i].col-col) == 1 and !white::blocks[row][col]) {
                     for (int i=0;i<white::pawns.size();i++) {
@@ -266,11 +289,17 @@ namespace black {
         for (int i=0;i<kings.size();i++) {
             if (row == 10 and col == 10) {  // K-castle
                 kings[i].move(0, 6);
-                rooks[1].move(0, 5);
+                for (Rook& r : rooks) {
+                    if (r.col == 7 and r.row == 0)
+                        r.move(0, 5);
+                }
                 break;
             } else if (row == 100 and col == 100) {  // Q-castle
                 kings[i].move(0, 2);
-                rooks[0].move(0, 3);
+                for (Rook& r : rooks) {
+                    if (r.col == 0 and r.row == 0)
+                        r.move(0, 5);
+                }
                 break;
             }
             if (piece == "K" + str(i)) {

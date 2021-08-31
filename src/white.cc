@@ -229,6 +229,25 @@ namespace white {
         
         for (int i=0;i<8;i++) {
             if (piece == "P" + str(i)) {
+                // promote
+                if (row == 0) {
+                    string promote_piece;
+                    cout << "Enter piece: (Q, N, R, B) ";
+                    cin >> promote_piece;
+                    if (promote_piece == "Q") {
+                        queens.push_back(Queen('W', row, col));
+                    } else if (promote_piece == "R") {
+                        rooks.push_back(Rook('W', row, col));
+                    } else if (promote_piece == "B") {
+                        bishops.push_back(Bishop('W', row, col));
+                    } else if (promote_piece == "N") {
+                        knights.push_back(Knight('W', row, col));
+                    }
+                    blocks[row][col] = 1;
+                    blocks[pawns[i].row][pawns[i].col] = 0;
+                    pawns.erase(pawns.begin() + i);
+                    break;
+                }
                 // enpassant capture
                 if (row == 2 and abs(pawns[i].col-col) == 1 and !black::blocks[row][col]) {
                     for (int i=0;i<black::pawns.size();i++) {
@@ -269,11 +288,17 @@ namespace white {
         for (int i=0;i<kings.size();i++) {
             if (row == 10 and col == 10) {  // K-castle
                 kings[i].move(7, 6);
-                rooks[1].move(7, 5);
+                for (Rook& r : rooks) {
+                    if (r.col == 7 and r.row == 7)
+                        r.move(7, 5);
+                }
                 break;
             } else if (row == 100 and col == 100) {  // Q-castle
                 kings[i].move(7, 2);
-                rooks[0].move(7, 3);
+                for (Rook& r : rooks) {
+                    if (r.col == 0 and r.row == 7)
+                        r.move(7, 5);
+                }
                 break;
             }
             if (piece == "K" + str(i)) {
