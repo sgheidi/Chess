@@ -222,6 +222,15 @@ int main() {
 							else if (select_piece == "K" + str(i) and 
 							find(white::kings[i].movelist.begin(), white::kings[i].movelist.end(), to_sq) 
 							== white::kings[i].movelist.end()) {
+								if (to_sq[0] == 7) {
+									// K castle
+									if ((to_sq[1] == 6 or to_sq[1] == 7) and white::can_castle_K()) {
+										white::move(select_piece, 10, 10, false);
+									}
+									// Q castle
+									else if ((to_sq[1] == 0 or to_sq[1] == 2) and white::can_castle_Q())
+										white::move(select_piece, 100, 100, false);
+								}
 								white::kings[i].x = white::kings[i].col * UNIT;
 								white::kings[i].y = white::kings[i].row * UNIT;
 							}
@@ -303,6 +312,15 @@ int main() {
 							else if (select_piece == "K" + str(i) and 
 							find(black::kings[i].movelist.begin(), black::kings[i].movelist.end(), to_sq) 
 							== black::kings[i].movelist.end()) {
+								if (to_sq[0] == 0) {
+									// K castle
+									if ((to_sq[1] == 6 or to_sq[1] == 7) and black::can_castle_K()) {
+										black::move(select_piece, 10, 10);
+									}
+									// Q castle
+									else if ((to_sq[1] == 0 or to_sq[1] == 2) and black::can_castle_Q())
+										black::move(select_piece, 100, 100);
+								}
 								black::kings[i].x = black::kings[i].col * UNIT;
 								black::kings[i].y = black::kings[i].row * UNIT;
 							}

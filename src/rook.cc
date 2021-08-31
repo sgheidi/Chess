@@ -61,6 +61,7 @@ void Rook::update_movelist(bool check_pin) {
             vector<vector<int>> check_sq = {};
             row_ = row;
             col_ = col;
+            bool moved_ = moved;
             for (auto sq : movelist) {
                 move(sq[0], sq[1]);
                 for (Bishop& b : black::bishops) b.update_movelist(false);
@@ -77,6 +78,7 @@ void Rook::update_movelist(bool check_pin) {
             }
             move(row_, col_);
             diff(movelist, check_sq);
+            moved = moved_;
         }
     } else {
         // U
@@ -131,6 +133,7 @@ void Rook::update_movelist(bool check_pin) {
             vector<vector<int>> check_sq = {};
             row_ = row;
             col_ = col;
+            bool moved_ = moved;
             for (auto sq : movelist) {
                 move(sq[0], sq[1]);
                 for (Bishop& b : white::bishops) b.update_movelist(false);
@@ -147,6 +150,7 @@ void Rook::update_movelist(bool check_pin) {
             }
             move(row_, col_);
             diff(movelist, check_sq);
+            moved = moved_;
         }
     }
 }
@@ -163,4 +167,5 @@ void Rook::move(int row_, int col_) {
     col = col_;
     x = col * UNIT;
     y = row * UNIT;
+    moved = true;
 }

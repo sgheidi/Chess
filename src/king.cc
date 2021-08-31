@@ -21,6 +21,7 @@ void King::update_movelist() {
         vector<vector<int>> check_sq = {};
         int row_ = row;
         int col_ = col;
+        bool moved_ = moved;
         for (auto sq : movelist) {
             bool capture = false;
             if (black::blocks[sq[0]][sq[1]]) { // capture
@@ -40,10 +41,15 @@ void King::update_movelist() {
         }
         move(row_, col_);
         diff(movelist, check_sq);
+        moved = moved_;
         for (Bishop& b : black::bishops) b.update_movelist(false);
         for (Queen& q : black::queens) q.update_movelist(false);
         for (Rook& r : black::rooks) r.update_movelist(false);
         for (Knight& n : black::knights) n.update_movelist(false);
+        if (white::can_castle_K())
+            movelist.push_back({10, 10}); // (10, 10) code for castling king-side
+        if (white::can_castle_Q())
+            movelist.push_back({100, 100}); // (100, 100) code for castling king-side
     } else {
         for (vector<int> s : squares) {
             if (!black::blocks[s[0]][s[1]] and s[0] >= 0 and s[0] < 8 and s[1] >= 0 and s[1] < 8) {
@@ -53,6 +59,7 @@ void King::update_movelist() {
         vector<vector<int>> check_sq = {};
         int row_ = row;
         int col_ = col;
+        bool moved_ = moved;
         for (auto sq : movelist) {
             bool capture = false;
             if (white::blocks[sq[0]][sq[1]]) { // capture
@@ -72,10 +79,15 @@ void King::update_movelist() {
         }
         move(row_, col_);
         diff(movelist, check_sq);
+        moved = moved_;
         for (Bishop& b : white::bishops) b.update_movelist(false);
         for (Queen& q : white::queens) q.update_movelist(false);
         for (Rook& r : white::rooks) r.update_movelist(false);
         for (Knight& n : white::knights) n.update_movelist(false);
+        if (black::can_castle_K())
+            movelist.push_back({10, 10}); // (10, 10) code for castling king-side
+        if (black::can_castle_Q())
+            movelist.push_back({100, 100}); // (100, 100) code for castling king-side
     }
 }
 
@@ -90,5 +102,6 @@ void King::move(int row_, int col_) {
     row = row_;
     col = col_;
     x = col * UNIT;
-    y = row * UNIT;   
+    y = row * UNIT;
+    moved = true;
 }

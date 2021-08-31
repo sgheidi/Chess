@@ -24,6 +24,96 @@ namespace black {
     vector<King> kings = {};
     int blocks[8][8] = {};
 
+    // return true if square (row, col) is in any of opponent pieces' movelists
+    bool in_opp_movelist(int row, int col) {
+        vector<int> sq = {row, col};
+        for (int i=0;i<white::bishops.size();i++) {
+            if (find(white::bishops[i].movelist.begin(), white::bishops[i].movelist.end(), sq) 
+            != white::bishops[i].movelist.end()) {
+                return true;
+            }
+        }
+        for (int i=0;i<white::knights.size();i++) {
+            if (find(white::knights[i].movelist.begin(), white::knights[i].movelist.end(), sq) 
+            != white::knights[i].movelist.end()) {
+                return true;
+            }
+        }
+        for (int i=0;i<white::rooks.size();i++) {
+            if (find(white::rooks[i].movelist.begin(), white::rooks[i].movelist.end(), sq) 
+            != white::rooks[i].movelist.end()) {
+                return true;
+            }
+        }
+        for (int i=0;i<white::queens.size();i++) {
+            if (find(white::queens[i].movelist.begin(), white::queens[i].movelist.end(), sq) 
+            != white::queens[i].movelist.end()) {
+                return true;
+            }
+        }
+        for (int i=0;i<white::pawns.size();i++) {
+            if (find(white::pawns[i].attacks.begin(), white::pawns[i].attacks.end(), sq) 
+            != white::pawns[i].attacks.end()) {
+                return true;
+            }
+        }
+        for (int i=0;i<white::kings.size();i++) {
+            if (find(white::kings[i].movelist.begin(), white::kings[i].movelist.end(), sq) 
+            != white::kings[i].movelist.end()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool can_castle_Q() {
+        bool queenside_rook_present = false;
+        if (!blocks[0][0] or !blocks[0][4] or blocks[0][1] or blocks[0][2] or blocks[0][3] 
+        or white::blocks[0][1] or white::blocks[0][2] or white::blocks[0][3] or in_check()) {
+            // print("1");
+            return false;
+        }
+        for (Rook r : rooks) {
+            if (r.row == 0 and r.col == 0 and !r.moved)
+                queenside_rook_present = true;
+        }
+        if (kings[0].moved or kings[0].row != 0 or kings[0].col != 4) {
+            // print("2");
+            return false;
+        }
+        if (in_opp_movelist(0, 2) or in_opp_movelist(0, 3)) {
+            // print("3");
+            return false;
+        }
+        // if (!queenside_rook_present)
+        //     print("4");
+        return queenside_rook_present;
+    }
+
+    bool can_castle_K() {
+        bool kingside_rook_present = false;
+        if (!blocks[0][7] or !blocks[0][4] or blocks[0][6] or blocks[0][5] or white::blocks[0][6] or white::blocks[0][5]
+        or in_check()) {
+            // print("1");
+            return false;
+        }
+        for (Rook r : rooks) {
+            if (r.row == 0 and r.col == 7 and !r.moved)
+                kingside_rook_present = true;
+        }
+        if (kings[0].moved or kings[0].row != 0 or kings[0].col != 4) {
+            // print("2");
+            return false;
+        }
+        if (in_opp_movelist(0, 5) or in_opp_movelist(0, 6)) {
+            // print("3");
+            return false;
+        }
+        // if (!kingside_rook_present)
+        //     print("4");
+        return kingside_rook_present;
+    }
+
     bool in_check() {
         bool ret = false;
         checker.clear();
@@ -174,42 +264,53 @@ namespace black {
             }
         }
         for (int i=0;i<kings.size();i++) {
+            if (row == 10 and col == 10) {  // K-castle
+                kings[i].move(0, 6);
+                rooks[1].move(0, 5);
+                break;
+            } else if (row == 100 and col == 100) {  // Q-castle
+                kings[i].move(0, 2);
+                rooks[0].move(0, 3);
+                break;
+            }
             if (piece == "K" + str(i)) {
                 kings[i].move(row, col);
             }
         }
         // captures
-        if (white::blocks[row][col]) {
-            white::blocks[row][col] = 0;
-            string piece = white::get_piece(row, col);
-            for (int i=0;i<8;i++) {
-                if (piece == "P" + str(i)) {
-                    white::pawns.erase(white::pawns.begin() + i); 
+        if (row != 10 and row != 100 and col != 10 and col != 100) {
+            if (white::blocks[row][col]) {
+                white::blocks[row][col] = 0;
+                string piece = white::get_piece(row, col);
+                for (int i=0;i<8;i++) {
+                    if (piece == "P" + str(i)) {
+                        white::pawns.erase(white::pawns.begin() + i); 
+                    }
                 }
-            }
-            for (int i=0;i<white::knights.size();i++) {
-                if (piece == "N" + str(i)) {
-                    white::knights.erase(white::knights.begin() + i); 
+                for (int i=0;i<white::knights.size();i++) {
+                    if (piece == "N" + str(i)) {
+                        white::knights.erase(white::knights.begin() + i); 
+                    }
                 }
-            }
-            for (int i=0;i<white::bishops.size();i++) {
-                if (piece == "B" + str(i)) {
-                    white::bishops.erase(white::bishops.begin() + i); 
+                for (int i=0;i<white::bishops.size();i++) {
+                    if (piece == "B" + str(i)) {
+                        white::bishops.erase(white::bishops.begin() + i); 
+                    }
                 }
-            }
-            for (int i=0;i<white::rooks.size();i++) {
-                if (piece == "R" + str(i)) {
-                    white::rooks.erase(white::rooks.begin() + i); 
+                for (int i=0;i<white::rooks.size();i++) {
+                    if (piece == "R" + str(i)) {
+                        white::rooks.erase(white::rooks.begin() + i); 
+                    }
                 }
-            }
-            for (int i=0;i<white::queens.size();i++) {
-                if (piece == "Q" + str(i)) {
-                    white::queens.erase(white::queens.begin() + i); 
+                for (int i=0;i<white::queens.size();i++) {
+                    if (piece == "Q" + str(i)) {
+                        white::queens.erase(white::queens.begin() + i); 
+                    }
                 }
-            }
-            for (int i=0;i<white::kings.size();i++) {
-                if (piece == "K" + str(i)) {
-                    white::kings.erase(white::kings.begin() + i); 
+                for (int i=0;i<white::kings.size();i++) {
+                    if (piece == "K" + str(i)) {
+                        white::kings.erase(white::kings.begin() + i); 
+                    }
                 }
             }
         }
@@ -260,6 +361,13 @@ namespace black {
         for (int i=0;i<kings.size();i++) {
             if (piece == "K" + str(i)) {
                 for (auto arr : kings[i].movelist) {
+                    if (arr[0] == 10 and arr[1] == 10) { // K-castle
+                        circle(0, 6);
+                        continue;
+                    } else if (arr[0] == 100 and arr[1] == 100) { // Q-castle
+                        circle(0, 2);
+                        continue;
+                    }
                     circle(arr[0], arr[1]);
                 }
             }

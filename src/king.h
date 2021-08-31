@@ -10,7 +10,9 @@ class King : public Piece {
     public:
         int row, col;
         char side;
+        bool moved;
         King(char side, int row, int col) : side(side), row(row), col(col) {
+            moved = false;
             movelist = {};
             x = col * UNIT;
             y = row * UNIT;

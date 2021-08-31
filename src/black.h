@@ -21,6 +21,8 @@ namespace black {
     extern vector<Queen> queens;
     extern vector<King> kings;
     extern int blocks[8][8];
+    bool can_castle_Q();
+    bool can_castle_K();
     bool in_check();
     void move(string piece, int row, int col);
     void init();
