@@ -1,5 +1,5 @@
 # generic Makefile for building program from source
-# PCH: sudo g++ -Wall -fexceptions -g src/common.h (for any 'common' file import)
+# PCH: sudo g++ -Wall -fexceptions -g common.h (for any 'common' file import)
 
 SOURCE = main.cc bishop.cc white.cc common.cc black.cc pawn.cc knight.cc rook.cc queen.cc king.cc
 CC = g++ -std=c++2a

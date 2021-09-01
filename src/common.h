@@ -74,4 +74,8 @@ inline void ERROR(string msg) {
     exit(1);
 }
 
+inline void STATUS(string msg) {
+    cout << RED << msg << RESET << endl;
+}
+
 #endif // CHESS_CONFIG_H

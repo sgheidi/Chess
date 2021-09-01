@@ -300,7 +300,7 @@ namespace white {
                 kings[i].move(7, 2);
                 for (Rook& r : rooks) {
                     if (r.col == 0 and r.row == 7)
-                        r.move(7, 5);
+                        r.move(7, 3);
                 }
                 break;
             }

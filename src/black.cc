@@ -297,7 +297,7 @@ namespace black {
                 kings[i].move(0, 2);
                 for (Rook& r : rooks) {
                     if (r.col == 0 and r.row == 0)
-                        r.move(0, 5);
+                        r.move(0, 3);
                 }
                 break;
             }
