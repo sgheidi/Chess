@@ -4,8 +4,7 @@
 
 #include "white.h"
 #include "black.h"
-#include "config.h"
-#include "util.h"
+#include "common.h"
 
 using namespace std;
 

@@ -9,8 +9,7 @@
 #include "pawn.h"
 #include "queen.h"
 #include "king.h"
-#include "config.h"
-#include "error.h"
+#include "common.h"
 
 using namespace std;
 

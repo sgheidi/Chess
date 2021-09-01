@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "config.h"
+#include "common.h"
 
 using namespace std;
 

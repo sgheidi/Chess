@@ -9,8 +9,7 @@
 #include "pawn.h"
 #include "queen.h"
 #include "king.h"
-#include "config.h"
-#include "error.h"
+#include "common.h"
 
 using namespace std;
 
@@ -23,6 +22,10 @@ namespace white {
     vector<Queen> queens = {};
     vector<King> kings = {};
     int blocks[8][8] = {};
+
+    bool no_moves() {
+
+    }
 
     // return true if square (row, col) is in any of opponent pieces' movelists
     bool in_opp_movelist(int row, int col) {

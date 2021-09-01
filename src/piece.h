@@ -2,8 +2,7 @@
 #define CHESS_PIECE_H
 
 #include <SFML/Graphics.hpp>
-#include "config.h"
-#include "util.h"
+#include "common.h"
 
 using namespace std;
 
