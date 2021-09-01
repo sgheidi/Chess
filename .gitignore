@@ -4,3 +4,4 @@ todo*
 src/test.cc
 src/test.sh
 temp
+*.gch
