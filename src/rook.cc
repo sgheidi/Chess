@@ -169,3 +169,14 @@ void Rook::move(int row_, int col_) {
     y = row * UNIT;
     moved = true;
 }
+
+void Rook::draw() {
+    string color = (side == 'W') ? "white" : "black";
+    if (!texture.loadFromFile("../assets/sprites/" + color + "/rook.png")) {
+        throw runtime_error("Could not load sprite file.");
+    }
+    sprite.setTexture(texture);
+    sprite.setScale(PIECES_SCALE, PIECES_SCALE);
+    sprite.setPosition(x + PIECES_PADDING_X, y + PIECES_PADDING_Y);
+    window.draw(sprite);
+}

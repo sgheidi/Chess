@@ -21,6 +21,7 @@ namespace white {
     extern vector<Queen> queens;
     extern vector<King> kings;
     extern int blocks[8][8];
+    bool no_moves();
     bool can_castle_Q();
     bool can_castle_K();
     bool in_check();

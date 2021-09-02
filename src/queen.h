@@ -17,6 +17,7 @@ class Queen : public Piece {
         }
         void move(int row, int col);
         void update_movelist(bool check_pin);
+        void draw();
 };
 
 #endif // CHESS_QUEEN_H

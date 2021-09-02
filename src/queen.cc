@@ -276,3 +276,14 @@ void Queen::move(int row_, int col_) {
     x = col * UNIT;
     y = row * UNIT;
 }
+
+void Queen::draw() {
+    string color = (side == 'W') ? "white" : "black";
+    if (!texture.loadFromFile("../assets/sprites/" + color + "/queen.png")) {
+        throw runtime_error("Could not load sprite file.");
+    }
+    sprite.setTexture(texture);
+    sprite.setScale(PIECES_SCALE, PIECES_SCALE);
+    sprite.setPosition(x + PIECES_PADDING_X, y + PIECES_PADDING_Y);
+    window.draw(sprite);
+}

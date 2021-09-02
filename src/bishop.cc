@@ -183,7 +183,8 @@ void Bishop::move(int row_, int col_) {
 }
 
 void Bishop::draw() {
-    if (!texture.loadFromFile("../assets/sprites/white/bishop.png")) {
+    string color = (side == 'W') ? "white" : "black";
+    if (!texture.loadFromFile("../assets/sprites/" + color + "/bishop.png")) {
         throw runtime_error("Could not load sprite file.");
     }
     sprite.setTexture(texture);

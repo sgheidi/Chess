@@ -24,7 +24,26 @@ namespace black {
     int blocks[8][8] = {};
 
     bool no_moves() {
-        // for     
+        for (Pawn p : pawns) {
+            if (!p.movelist.empty()) return false;
+        }
+        for (Bishop b : bishops) {
+            if (!b.movelist.empty()) return false;
+        }
+        for (Knight n : knights) {
+            if (!n.movelist.empty()) return false;
+        }
+        for (Rook r : rooks) {
+            if (!r.movelist.empty()) return false;
+        }
+        for (Queen q : queens) {
+            if (!q.movelist.empty()) return false;
+        }
+        for (King k : kings) {
+            if (!k.movelist.empty()) return false;
+        }
+        
+        return true;
     }
 
     // return true if square (row, col) is in any of opponent pieces' movelists
@@ -178,7 +197,7 @@ namespace black {
 
     void circle(int row, int col) {
         sf::CircleShape circle(8);
-        circle.setPosition(col*UNIT + PIECES_PADDING_X + 22, row*UNIT + PIECES_PADDING_Y + 22);
+        circle.setPosition(col*UNIT + PIECES_PADDING_X + CIRCLE_PADDING_X, row*UNIT + PIECES_PADDING_Y + CIRCLE_PADDING_Y);
         circle.setFillColor(sf::Color(66, 114, 118));
         window.draw(circle);
     }
@@ -236,17 +255,23 @@ namespace black {
             if (piece == "P" + str(i)) {
                 // promote
                 if (row == 7) {
-                    string promote_piece;
-                    cout << "Enter piece: (Q, N, R, B) ";
-                    cin >> promote_piece;
-                    if (promote_piece == "Q") {
-                        queens.push_back(Queen('B', row, col));
-                    } else if (promote_piece == "R") {
-                        rooks.push_back(Rook('B', row, col));
-                    } else if (promote_piece == "B") {
-                        bishops.push_back(Bishop('B', row, col));
-                    } else if (promote_piece == "N") {
-                        knights.push_back(Knight('B', row, col));
+                    while (1) {
+                        string promote_piece;
+                        cout << "Enter piece (Q, N, R, B): ";
+                        cin >> promote_piece;
+                        if (promote_piece == "Q") {
+                            queens.push_back(Queen('B', row, col));
+                            break;
+                        } else if (promote_piece == "R") {
+                            rooks.push_back(Rook('B', row, col));
+                            break;
+                        } else if (promote_piece == "B") {
+                            bishops.push_back(Bishop('B', row, col));
+                            break;
+                        } else if (promote_piece == "N") {
+                            knights.push_back(Knight('B', row, col));
+                            break;
+                        }
                     }
                     blocks[row][col] = 1;
                     blocks[pawns[i].row][pawns[i].col] = 0;
@@ -347,6 +372,15 @@ namespace black {
         history.n_moves ++;
         history.piece.push_back(piece);
         history.pos.push_back({row, col});
+        if (white::no_moves()) {
+            if (white::in_check()) {
+                in_checkmate = true;
+                STATUS("CHECKMATE");
+            } else {
+                in_draw = true;
+                STATUS("DRAW");
+            }
+        }
     }
 
     // show the moves of the piece on (row, col)
@@ -438,59 +472,11 @@ namespace black {
     }
 
     void draw() {
-        for (Bishop b : bishops) {
-            if (!b.texture.loadFromFile("../assets/sprites/black/bishop.png")) {
-                throw runtime_error("Could not load sprite file.");
-            }
-            b.sprite.setTexture(b.texture);
-            b.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            b.sprite.setPosition(b.x + PIECES_PADDING_X, b.y + PIECES_PADDING_Y);
-            window.draw(b.sprite);
-        }
-        for (Knight n : knights) {
-            if (!n.texture.loadFromFile("../assets/sprites/black/knight.png")) {
-                throw runtime_error("Could not load sprite file.");
-            }
-            n.sprite.setTexture(n.texture);
-            n.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            n.sprite.setPosition(n.x + PIECES_PADDING_X, n.y + PIECES_PADDING_Y);
-            window.draw(n.sprite);
-        }
-        for (Rook r : rooks) {
-            if (!r.texture.loadFromFile("../assets/sprites/black/rook.png")) {
-                throw runtime_error("Could not load sprite file.");
-            }
-            r.sprite.setTexture(r.texture);
-            r.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            r.sprite.setPosition(r.x + PIECES_PADDING_X, r.y + PIECES_PADDING_Y);
-            window.draw(r.sprite);
-        }
-        for (Pawn p : pawns) {
-            if (!p.texture.loadFromFile("../assets/sprites/black/pawn.png")) {
-                throw runtime_error("Could not load sprite file.");
-            }
-            p.sprite.setTexture(p.texture);
-            p.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            p.sprite.setPosition(p.x + PIECES_PADDING_X, p.y + PIECES_PADDING_Y);
-            window.draw(p.sprite);
-        }
-        for (Queen q : queens) {
-            if (!q.texture.loadFromFile("../assets/sprites/black/queen.png")) {
-                throw runtime_error("Could not load sprite file.");
-            }
-            q.sprite.setTexture(q.texture);
-            q.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            q.sprite.setPosition(q.x + PIECES_PADDING_X, q.y + PIECES_PADDING_Y);
-            window.draw(q.sprite);
-        }
-        for (King k : kings) {
-            if (!k.texture.loadFromFile("../assets/sprites/black/king.png")) {
-                throw runtime_error("Could not load sprite file.");
-            }
-            k.sprite.setTexture(k.texture);
-            k.sprite.setScale(PIECES_SCALE, PIECES_SCALE);
-            k.sprite.setPosition(k.x + PIECES_PADDING_X, k.y + PIECES_PADDING_Y);
-            window.draw(k.sprite);
-        }
+        for (Bishop b : bishops) b.draw();
+        for (Pawn p : pawns) p.draw();
+        for (Knight n : knights) n.draw();
+        for (Rook r : rooks) r.draw();
+        for (King k : kings) k.draw();
+        for (Queen q : queens) q.draw();
     }
 }

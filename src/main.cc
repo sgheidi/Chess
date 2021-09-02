@@ -16,8 +16,22 @@ void rect(int* color, int row, int col) {
 }
 
 void draw_board() {
-	int light[3] = {230, 230, 230};
-	int dark[3] = {96, 144, 148};
+	int light[3] = {220, 220, 220};
+	int dark[3];
+	switch (THEME) {
+		case 0: {
+			int dark[3] = {89, 130, 171};
+			break;
+		}
+		case 1: {
+			int dark[3] = {77, 143, 96};
+			break;
+		}
+		case 2: {
+			int dark[3] = {138, 52, 52};
+			break;
+		}
+	}
 	for (int k=0; k<8; k++) {
 		for (int i=0; i<8; i++) {
 			if ((k + i) % 2 != 0) {
@@ -30,7 +44,7 @@ void draw_board() {
 }
 
 void draw_select(int row, int col) {
-	int color[3] = {166, 214, 218};
+	int color[3] = {155, 186, 181};
 	if (row != -1 and col != -1) {
 		rect(color, row, col);
 	}
@@ -328,7 +342,7 @@ int main() {
 					select_piece = "";
 				}
 			}
-			else if (event.type == sf::Event::MouseButtonPressed) {
+			else if (event.type == sf::Event::MouseButtonPressed and !in_checkmate and !in_draw) {
 				sf::Vector2i position = sf::Mouse::getPosition(window);
 				select_row = position.y / int(UNIT);
 				select_col = position.x / int(UNIT);
@@ -350,76 +364,76 @@ int main() {
 				if (white::blocks[select_row][select_col]) {
 					for (int i=0;i<8;i++) {
 						if (select_piece == "P" + str(i)) {
-							white::pawns[i].x = position.x - 2.6*PIECES_PADDING_X;
-							white::pawns[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							white::pawns[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							white::pawns[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<white::knights.size();i++) {
 						if (select_piece == "N" + str(i)) {
-							white::knights[i].x = position.x - 2.6*PIECES_PADDING_X;
-							white::knights[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							white::knights[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							white::knights[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<white::bishops.size();i++) {
 						if (select_piece == "B" + str(i)) {
-							white::bishops[i].x = position.x - 2.6*PIECES_PADDING_X;
-							white::bishops[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							white::bishops[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							white::bishops[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<white::rooks.size();i++) {
 						if (select_piece == "R" + str(i)) {
-							white::rooks[i].x = position.x - 2.6*PIECES_PADDING_X;
-							white::rooks[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							white::rooks[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							white::rooks[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<white::queens.size();i++) {
 						if (select_piece == "Q" + str(i)) {
-							white::queens[i].x = position.x - 2.6*PIECES_PADDING_X;
-							white::queens[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							white::queens[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							white::queens[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<white::kings.size();i++) {
 						if (select_piece == "K" + str(i)) {
-							white::kings[i].x = position.x - 2.6*PIECES_PADDING_X;
-							white::kings[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							white::kings[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							white::kings[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 				}
 				else if (black::blocks[select_row][select_col]) {
 					for (int i=0;i<8;i++) {
 						if (select_piece == "P" + str(i)) {
-							black::pawns[i].x = position.x - 2.6*PIECES_PADDING_X;
-							black::pawns[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							black::pawns[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							black::pawns[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<black::knights.size();i++) {
 						if (select_piece == "N" + str(i)) {
-							black::knights[i].x = position.x - 2.6*PIECES_PADDING_X;
-							black::knights[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							black::knights[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							black::knights[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<black::bishops.size();i++) {
 						if (select_piece == "B" + str(i)) {
-							black::bishops[i].x = position.x - 2.6*PIECES_PADDING_X;
-							black::bishops[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							black::bishops[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							black::bishops[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<black::rooks.size();i++) {
 						if (select_piece == "R" + str(i)) {
-							black::rooks[i].x = position.x - 2.6*PIECES_PADDING_X;
-							black::rooks[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							black::rooks[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							black::rooks[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<black::queens.size();i++) {
 						if (select_piece == "Q" + str(i)) {
-							black::queens[i].x = position.x - 2.6*PIECES_PADDING_X;
-							black::queens[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							black::queens[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							black::queens[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 					for (int i=0;i<black::kings.size();i++) {
 						if (select_piece == "K" + str(i)) {
-							black::kings[i].x = position.x - 2.6*PIECES_PADDING_X;
-							black::kings[i].y = position.y - 2.8*PIECES_PADDING_Y;
+							black::kings[i].x = position.x - DRAG_PADDING_X*PIECES_PADDING_X;
+							black::kings[i].y = position.y - DRAG_PADDING_Y*PIECES_PADDING_Y;
 						}
 					}
 				}

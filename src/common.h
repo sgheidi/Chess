@@ -8,11 +8,17 @@
 
 using namespace std;
 
-#define RES 800
+// UI
+#define RES 600
 #define UNIT RES/8
-#define PIECES_PADDING_X 19
-#define PIECES_PADDING_Y 17
-#define PIECES_SCALE 1.2
+#define PIECES_PADDING_X 11
+#define PIECES_PADDING_Y 7
+#define DRAG_PADDING_X 3.3
+#define DRAG_PADDING_Y 4.0
+#define CIRCLE_PADDING_X 20
+#define CIRCLE_PADDING_Y 20
+#define PIECES_SCALE 1.1
+#define THEME 0 // {0,1,2}
 
 #define print(x) cout << x << endl
 #define str(x) to_string(x)
@@ -21,6 +27,8 @@ using namespace std;
 #define NO_TURNS_ENABLED
 
 extern sf::RenderWindow window;
+extern bool in_checkmate;
+extern bool in_draw;
 
 extern struct History {
     int n_moves;
@@ -32,7 +40,7 @@ extern struct History {
 } history;
 
 // takes set difference (v1 - v2), places result into v1
-inline void diff(std::vector<std::vector<int>>& v1, std::vector<std::vector<int>> v2) {
+inline void diff(vector<vector<int>>& v1, vector<vector<int>> v2) {
     for (int i=v1.size()-1;i>=0;i--) {
         if (find(v2.begin(), v2.end(), v1[i]) != v2.end()) {
             v1.erase(v1.begin() + i);
@@ -75,7 +83,7 @@ inline void ERROR(string msg) {
 }
 
 inline void STATUS(string msg) {
-    cout << RED << msg << RESET << endl;
+    cout << BOLDCYAN << msg << RESET << endl;
 }
 
 #endif // CHESS_CONFIG_H
