@@ -1,0 +1,18 @@
+# .editorconfig file for consistent formatting when viewing on GitHub
+
+root = true
+
+[*]
+[.*]
+end_of_line = lf
+insert_final_newline = true
+
+# All files
+[*.*]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false

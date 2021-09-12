@@ -18,7 +18,7 @@ using namespace std;
 #define CIRCLE_PADDING_X 20
 #define CIRCLE_PADDING_Y 20
 #define PIECES_SCALE 1.1
-#define THEME 0 // {0,1,2}
+#define THEME 1 // {0,1,2}
 
 #define print(x) cout << x << endl
 #define str(x) to_string(x)

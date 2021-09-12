@@ -51,53 +51,53 @@ void draw_select(int row, int col) {
 }
 
 void take_back() {
-//     int last = history.n_moves;
-//     if (last == 0) {
-//         print("No moves to undo!");
-//         return;
-//     }
-//     white::move(history.piece[last-1], history.pos[last-1][0], history.pos[last-1][1], true);
-// 	if (history.is_capture[last-1]) {
-// 		for (int i=0;i<8;i++) {
-// 			if (history.capture_piece[last-1] == "P" + str(i)) {
-// 				black::pawns.push_back(Pawn('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-// 			}
-// 		}
-// 		for (int i=0;i<=black::knights.size();i++) {
-// 			if (history.capture_piece[last-1] == "N" + str(i)) {
-// 				black::knights.push_back(Knight('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-// 			}
-// 		}
-// 		for (int i=0;i<=black::bishops.size();i++) {
-// 			if (history.capture_piece[last-1] == "B" + str(i)) {
-// 				black::bishops.push_back(Bishop('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-// 			}
-// 		}
-// 		for (int i=0;i<=black::rooks.size();i++) {
-// 			if (history.capture_piece[last-1] == "R" + str(i)) {
-// 				black::rooks.push_back(Rook('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-// 			}
-// 		}
-// 		for (int i=0;i<=black::queens.size();i++) {
-// 			if (history.capture_piece[last-1] == "Q" + str(i)) {
-// 				black::queens.push_back(Queen('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-// 			}
-// 		}
-// 		for (int i=0;i<=black::kings.size();i++) {
-// 			if (history.capture_piece[last-1] == "K" + str(i)) {
-// 				black::kings.push_back(King('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-// 			}
-// 		}
-// 		black::blocks[history.capture_sq[last-1][0]][history.capture_sq[last-1][1]] = 1;
-// 	}
-// 	history.n_moves --;
-// 	history.piece.resize(history.n_moves);
-// 	history.pos.resize(history.n_moves);
-// 	history.is_capture.resize(history.n_moves);
-// 	history.capture_piece.resize(history.n_moves);
-// 	history.capture_sq.resize(history.n_moves);
-// 	white::update_moves();
-// 	black::update_moves();
+    int last = history.n_moves;
+    if (last == 0) {
+        print("No moves to undo!");
+        return;
+    }
+    white::move(history.piece[last-1], history.pos[last-1][0], history.pos[last-1][1], true);
+	if (history.is_capture[last-1]) {
+		for (int i=0;i<8;i++) {
+			if (history.capture_piece[last-1] == "P" + str(i)) {
+				black::pawns.push_back(Pawn('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::knights.size();i++) {
+			if (history.capture_piece[last-1] == "N" + str(i)) {
+				black::knights.push_back(Knight('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::bishops.size();i++) {
+			if (history.capture_piece[last-1] == "B" + str(i)) {
+				black::bishops.push_back(Bishop('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::rooks.size();i++) {
+			if (history.capture_piece[last-1] == "R" + str(i)) {
+				black::rooks.push_back(Rook('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::queens.size();i++) {
+			if (history.capture_piece[last-1] == "Q" + str(i)) {
+				black::queens.push_back(Queen('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		for (int i=0;i<=black::kings.size();i++) {
+			if (history.capture_piece[last-1] == "K" + str(i)) {
+				black::kings.push_back(King('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
+			}
+		}
+		black::blocks[history.capture_sq[last-1][0]][history.capture_sq[last-1][1]] = 1;
+	}
+	history.n_moves --;
+	history.piece.resize(history.n_moves);
+	history.pos.resize(history.n_moves);
+	history.is_capture.resize(history.n_moves);
+	history.capture_piece.resize(history.n_moves);
+	history.capture_sq.resize(history.n_moves);
+	white::update_moves();
+	black::update_moves();
 }
 
 int main() {
