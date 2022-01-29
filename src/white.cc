@@ -386,6 +386,7 @@ namespace white {
         update_moves();
         black::update_moves();
         if (!is_undo) {
+            history.side.push_back("W");
             history.n_moves ++;
             history.piece.push_back(piece);
         }

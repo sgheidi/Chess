@@ -18,7 +18,7 @@ using namespace std;
 #define CIRCLE_PADDING_X 20
 #define CIRCLE_PADDING_Y 20
 #define PIECES_SCALE 1.1
-#define THEME 1 // {0,1,2}
+#define THEME 0 // {0,1,2}
 
 #define print(x) cout << x << endl
 #define str(x) to_string(x)
@@ -32,6 +32,7 @@ extern bool in_draw;
 
 extern struct History {
     int n_moves;
+    vector<string> side;
     vector<vector<int>> pos;
     vector<string> piece;
     vector<bool> is_capture;
@@ -48,15 +49,25 @@ inline void diff(vector<vector<int>>& v1, vector<vector<int>> v2) {
     }
 }
 
-inline void print_vec2(vector<vector<int>> v) {
-    for (auto arr: v) {
+template <typename T>
+inline void print_vec2(vector<vector<T>> v) {
+    for (const auto& arr: v)
         cout << "{" << arr[0] << " " << arr[1] << "}" << endl;
-    }
-    cout << endl;
+}
+
+template <typename T>
+inline void print_vec(vector<T> v) {
+    cout << "{";
+    for (const auto& el: v)
+        cout << el << ",";
+    cout << "}" << endl;
 }
 
 inline void print_hist() {
     print(history.n_moves);
+    print_vec2(history.pos);
+    print_vec(history.side);
+    cout << endl;
 }
 
 #define RESET   "\033[0m"

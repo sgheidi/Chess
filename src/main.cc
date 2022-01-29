@@ -53,43 +53,14 @@ void draw_select(int row, int col) {
 void take_back() {
     int last = history.n_moves;
     if (last == 0) {
-        print("No moves to undo!");
+        print("No moves to undo.");
         return;
     }
-    white::move(history.piece[last-1], history.pos[last-1][0], history.pos[last-1][1], true);
-	if (history.is_capture[last-1]) {
-		for (int i=0;i<8;i++) {
-			if (history.capture_piece[last-1] == "P" + str(i)) {
-				black::pawns.push_back(Pawn('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-			}
-		}
-		for (int i=0;i<=black::knights.size();i++) {
-			if (history.capture_piece[last-1] == "N" + str(i)) {
-				black::knights.push_back(Knight('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-			}
-		}
-		for (int i=0;i<=black::bishops.size();i++) {
-			if (history.capture_piece[last-1] == "B" + str(i)) {
-				black::bishops.push_back(Bishop('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-			}
-		}
-		for (int i=0;i<=black::rooks.size();i++) {
-			if (history.capture_piece[last-1] == "R" + str(i)) {
-				black::rooks.push_back(Rook('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-			}
-		}
-		for (int i=0;i<=black::queens.size();i++) {
-			if (history.capture_piece[last-1] == "Q" + str(i)) {
-				black::queens.push_back(Queen('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-			}
-		}
-		for (int i=0;i<=black::kings.size();i++) {
-			if (history.capture_piece[last-1] == "K" + str(i)) {
-				black::kings.push_back(King('B', history.capture_sq[last-1][0], history.capture_sq[last-1][1]));
-			}
-		}
-		black::blocks[history.capture_sq[last-1][0]][history.capture_sq[last-1][1]] = 1;
-	}
+	print(history.side[last]);
+	if (history.side[last] == "W")
+    	white::move(history.piece[last-1], history.pos[last-1][0], history.pos[last-1][1], true);
+	else
+    	black::move(history.piece[last-1], history.pos[last-1][0], history.pos[last-1][1], true);
 	history.n_moves --;
 	history.piece.resize(history.n_moves);
 	history.pos.resize(history.n_moves);
@@ -145,12 +116,10 @@ int main() {
 					case sf::Keyboard::H:
 						print_hist(); 
 						break;
-					// case sf::Keyboard::H:
-					// 	print_vec2(); 
-					// 	break;
-					#endif
 					case sf::Keyboard::Z:
 						take_back();
+						break;
+					#endif
 				}
       		}
 			else if (event.type == sf::Event::MouseButtonReleased) {
@@ -254,7 +223,7 @@ int main() {
 							if (select_piece == "P" + str(i) and 
 							find(black::pawns[i].movelist.begin(), black::pawns[i].movelist.end(), to_sq) 
 							!= black::pawns[i].movelist.end()) {
-								black::move(select_piece, to_row, to_col);
+								black::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "P" + str(i) and 
 							find(black::pawns[i].movelist.begin(), black::pawns[i].movelist.end(), to_sq) 
@@ -267,7 +236,7 @@ int main() {
 							if (select_piece == "N" + str(i) and 
 							find(black::knights[i].movelist.begin(), black::knights[i].movelist.end(), to_sq) 
 							!= black::knights[i].movelist.end()) {
-								black::move(select_piece, to_row, to_col);
+								black::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "N" + str(i) and 
 							find(black::knights[i].movelist.begin(), black::knights[i].movelist.end(), to_sq) 
@@ -280,7 +249,7 @@ int main() {
 							if (select_piece == "B" + str(i) and 
 							find(black::bishops[i].movelist.begin(), black::bishops[i].movelist.end(), to_sq) 
 							!= black::bishops[i].movelist.end()) {
-								black::move(select_piece, to_row, to_col);
+								black::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "B" + str(i) and 
 							find(black::bishops[i].movelist.begin(), black::bishops[i].movelist.end(), to_sq) 
@@ -293,7 +262,7 @@ int main() {
 							if (select_piece == "R" + str(i) and 
 							find(black::rooks[i].movelist.begin(), black::rooks[i].movelist.end(), to_sq) 
 							!= black::rooks[i].movelist.end()) {
-								black::move(select_piece, to_row, to_col);
+								black::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "R" + str(i) and 
 							find(black::rooks[i].movelist.begin(), black::rooks[i].movelist.end(), to_sq) 
@@ -306,7 +275,7 @@ int main() {
 							if (select_piece == "Q" + str(i) and 
 							find(black::queens[i].movelist.begin(), black::queens[i].movelist.end(), to_sq) 
 							!= black::queens[i].movelist.end()) {
-								black::move(select_piece, to_row, to_col);
+								black::move(select_piece, to_row, to_col, false);
 							}
 							else if (select_piece == "Q" + str(i) and 
 							find(black::queens[i].movelist.begin(), black::queens[i].movelist.end(), to_sq) 
@@ -319,7 +288,7 @@ int main() {
 							if (select_piece == "K" + str(i) and 
 							find(black::kings[i].movelist.begin(), black::kings[i].movelist.end(), to_sq) 
 							!= black::kings[i].movelist.end()) {
-								black::move(select_piece, to_row, to_col);
+								black::move(select_piece, to_row, to_col, false);
 								last_selected_piece = "";
 							}
 							else if (select_piece == "K" + str(i) and 
@@ -328,11 +297,11 @@ int main() {
 								if (to_sq[0] == 0) {
 									// K castle
 									if ((to_sq[1] == 6 or to_sq[1] == 7) and black::can_castle_K()) {
-										black::move(select_piece, 10, 10);
+										black::move(select_piece, 10, 10, false);
 									}
 									// Q castle
 									else if ((to_sq[1] == 0 or to_sq[1] == 2) and black::can_castle_Q())
-										black::move(select_piece, 100, 100);
+										black::move(select_piece, 100, 100, false);
 								}
 								black::kings[i].x = black::kings[i].col * UNIT;
 								black::kings[i].y = black::kings[i].row * UNIT;

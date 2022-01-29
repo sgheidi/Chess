@@ -25,7 +25,7 @@ namespace black {
     bool can_castle_Q();
     bool can_castle_K();
     bool in_check();
-    void move(string piece, int row, int col);
+    void move(string piece, int row, int col, bool is_undo);
     void init();
     void show_moves(string piece);
     void draw();

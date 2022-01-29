@@ -233,9 +233,7 @@ namespace black {
                 return "K" + str(i);
             }
         }
-        return "nothin";
-        // ERROR("Error from function `black::get_piece`: row = " + str(row) + ", col = " + str(col) + ".");
-        // return NULL;
+        ERROR("Error from function `black::get_piece`: row = " + str(row) + ", col = " + str(col) + ".");
     }
 
     void update_moves() {
@@ -247,7 +245,7 @@ namespace black {
         for (King& k : kings) k.update_movelist();
     }
 
-    void move(string piece, int row, int col) {
+    void move(string piece, int row, int col, bool is_undo) {
         // reset pawn's enpassant flags
         for (Pawn& p : pawns) p.is_enpassant = false;
 
@@ -287,26 +285,31 @@ namespace black {
                         }
                     }
                 }
+                if (!is_undo) history.pos.push_back({pawns[i].row, pawns[i].col});
                 pawns[i].move(row, col);
             }
         }
         for (int i=0;i<knights.size();i++) {
             if (piece == "N" + str(i)) {
+                if (!is_undo) history.pos.push_back({knights[i].row, knights[i].col});
                 knights[i].move(row, col);
             }
         }
         for (int i=0;i<bishops.size();i++) {
             if (piece == "B" + str(i)) {
+                if (!is_undo) history.pos.push_back({bishops[i].row, bishops[i].col});
                 bishops[i].move(row, col);
             }
         }
         for (int i=0;i<rooks.size();i++) {
             if (piece == "R" + str(i)) {
+                if (!is_undo) history.pos.push_back({rooks[i].row, rooks[i].col});
                 rooks[i].move(row, col);
             }
         }
         for (int i=0;i<queens.size();i++) {
             if (piece == "Q" + str(i)) {
+                if (!is_undo) history.pos.push_back({queens[i].row, queens[i].col});
                 queens[i].move(row, col);
             }
         }
@@ -327,6 +330,7 @@ namespace black {
                 break;
             }
             if (piece == "K" + str(i)) {
+                if (!is_undo) history.pos.push_back({kings[i].row, kings[i].col});
                 kings[i].move(row, col);
             }
         }
@@ -334,44 +338,58 @@ namespace black {
         if (row != 10 and row != 100 and col != 10 and col != 100) {
             if (white::blocks[row][col]) {
                 white::blocks[row][col] = 0;
-                string piece = white::get_piece(row, col);
+                string capture_piece = white::get_piece(row, col);
+                if (!is_undo) {
+                    history.is_capture.push_back(true);
+                    history.capture_piece.push_back(capture_piece);
+                    history.capture_sq.push_back({row, col});
+                }
                 for (int i=0;i<8;i++) {
-                    if (piece == "P" + str(i)) {
+                    if (capture_piece == "P" + str(i)) {
                         white::pawns.erase(white::pawns.begin() + i); 
                     }
                 }
                 for (int i=0;i<white::knights.size();i++) {
-                    if (piece == "N" + str(i)) {
+                    if (capture_piece == "N" + str(i)) {
                         white::knights.erase(white::knights.begin() + i); 
                     }
                 }
                 for (int i=0;i<white::bishops.size();i++) {
-                    if (piece == "B" + str(i)) {
+                    if (capture_piece == "B" + str(i)) {
                         white::bishops.erase(white::bishops.begin() + i); 
                     }
                 }
                 for (int i=0;i<white::rooks.size();i++) {
-                    if (piece == "R" + str(i)) {
+                    if (capture_piece == "R" + str(i)) {
                         white::rooks.erase(white::rooks.begin() + i); 
                     }
                 }
                 for (int i=0;i<white::queens.size();i++) {
-                    if (piece == "Q" + str(i)) {
+                    if (capture_piece == "Q" + str(i)) {
                         white::queens.erase(white::queens.begin() + i); 
                     }
                 }
                 for (int i=0;i<white::kings.size();i++) {
-                    if (piece == "K" + str(i)) {
+                    if (capture_piece == "K" + str(i)) {
                         white::kings.erase(white::kings.begin() + i); 
                     }
+                }
+            }
+            else {
+                if (!is_undo) {
+                    history.is_capture.push_back(false);
+                    history.capture_piece.push_back("");
+                    history.capture_sq.push_back({-1,-1});
                 }
             }
         }
         update_moves();
         white::update_moves();
-        history.n_moves ++;
-        history.piece.push_back(piece);
-        history.pos.push_back({row, col});
+        if (!is_undo) {
+            history.side.push_back("B");
+            history.n_moves ++;
+            history.piece.push_back(piece);
+        }
         if (white::no_moves()) {
             if (white::in_check()) {
                 in_checkmate = true;
